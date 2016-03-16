@@ -1,0 +1,68 @@
+\documentclass[]{spie}  %>>> use for US letter paper
+%\documentclass[a4paper]{spie}  %>>> use this instead for A4 paper
+%\documentclass[nocompress]{spie}  %>>> to avoid compression of citations
+
+\renewcommand{\baselinestretch}{1.0} % Change to 1.65 for double spacing
+\newcommand{\aap}{Astronomy \& Astrophysics}
+
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\title{Investigating interoperability of the LSST Data Management software stack with Astropy}
+% Jenness, Bosch, Owen, Parejko, Sick, Swinbank, de Val-Boro et al
+\author[a]{Tim Jenness}
+\author[b]{James Bosch}
+\author[c]{Russell Owen}
+\author[c]{John Parejko}
+\author[a]{Jonathon Sick}
+\author[b]{John Swinbank}
+\author[b]{Miguel de Val-Boro}
+
+\affil[a]{LSST Project Management Office, Tucson, AZ, U.S.A.}
+\affil[b]{Princeton University, Princeton, NJ, U.S.A.}
+\affil[c]{University of Washington, Seattle, WA, U.S.A}
+
+\authorinfo{Further author information: (Send correspondence to T.J.)\\A.A.A.: E-mail: tjenness@lsst.org}
+
+% Option to view page numbers
+\pagestyle{empty} % change to \pagestyle{plain} for page numbers
+\setcounter{page}{301} % Set start page numbering at e.g. 301
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+  The Large Synoptic Survey Telescope (LSST) will be an 8.4\,m optical survey telescope sited in Chile and capable of imaging the entire sky twice a week.
+  The data rate of approximately 15 TB per night and the requirements to both issue alerts on transient sources within 60 seconds of observing and also to create annual data releases means that automated data management systems and data processing pipelines are a key deliverable of the LSST construction project.
+  The LSST data management software has been in development since 2004 and, like other software developed in that era such as CASA, is based on a C++ core with a Python control layer.
+  The software consists of nearly quarter of a million lines of code covering the system from fundamental WCS and table libraries to pipeline environments and distributed process execution.
+
+  The Astropy project began in 2011 as an attempt to bring together disparate open source Python projects and build a core standard infrastructure that can be used by and built upon by the astronomy community.
+  This project has been phenomenally successful in the years since it has begun and has grown to be the de facto standard for Python software in astronomy.
+  Astropy brings with it considerable expectations from the community on how astronomy Python software should be developed and it is clear that by the time LSST is fully operational in the 2020s many of the prospective users of the LSST software stack will assume that Astropy software will be integrated.
+
+  In this paper we describe the overlap between the LSST science pipeline software and Astropy software and investigate areas where the LSST software provides new functionality.
+  We also discuss the possibilities of re-engineering the LSST science pipeline software to build upon Astropy, including the option of contributing affiliated packages.
+\end{abstract}
+
+% Include a list of keywords after the abstract
+\keywords{Astronomy Software, Python, Code Reuse}
+
+\section{INTRODUCTION}
+\label{sec:intro}  % \label{} allows reference to this section
+
+Astropy~\cite{2013A&A...558A..33A}\ldots
+DM Software~\cite{2004AAS...20510811A,2010SPIE.7740E..15A}
+
+
+\acknowledgments
+
+This material is based upon work supported in part by the National Science Foundation through Cooperative Support Agreement (CSA) Award No.\ AST-1227061 under Governing Cooperative Agreement 1258333 managed by the Association of Universities for Research in Astronomy (AURA), and the Department of Energy under Contract No.\ DE-AC02-76SF00515 with the SLAC National Accelerator Laboratory.
+Additional LSST funding comes from private donations, grants to universities, and in-kind support from LSSTC Institutional Members.
+
+% References
+\bibliography{lsst-astropy} % bibliography data in report.bib
+\bibliographystyle{spiebib} % makes bibtex use spiebib.bst
+
+\end{document}
