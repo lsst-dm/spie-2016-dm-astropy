@@ -4,6 +4,8 @@
 
 \renewcommand{\baselinestretch}{1.0} % Change to 1.65 for double spacing
 \newcommand{\aap}{Astronomy \& Astrophysics}
+\newcommand{\procspie}{Proc.\ SPIE}
+\newcommand{\aspconf}{ASP Conf.\ Ser.}
 
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{graphicx}
@@ -23,7 +25,7 @@
 \affil[b]{Princeton University, Princeton, NJ, U.S.A.}
 \affil[c]{University of Washington, Seattle, WA, U.S.A}
 
-\authorinfo{Further author information: (Send correspondence to T.J.)\\A.A.A.: E-mail: tjenness@lsst.org}
+\authorinfo{Further author information: (Send correspondence to T.J.)\\T.J.: E-mail: tjenness@lsst.org}
 
 % Option to view page numbers
 \pagestyle{empty} % change to \pagestyle{plain} for page numbers
@@ -34,7 +36,7 @@
 
 \begin{abstract}
   The Large Synoptic Survey Telescope (LSST) will be an 8.4\,m optical survey telescope sited in Chile and capable of imaging the entire sky twice a week.
-  The data rate of approximately 15 TB per night and the requirements to both issue alerts on transient sources within 60 seconds of observing and also to create annual data releases means that automated data management systems and data processing pipelines are a key deliverable of the LSST construction project.
+  The data rate of approximately 15\,TB per night and the requirements to both issue alerts on transient sources within 60 seconds of observing and also to create annual data releases means that automated data management systems and data processing pipelines are a key deliverable of the LSST construction project.
   The LSST data management software has been in development since 2004 and, like other software developed in that era such as CASA, is based on a C++ core with a Python control layer.
   The software consists of nearly quarter of a million lines of code covering the system from fundamental WCS and table libraries to pipeline environments and distributed process execution.
 
@@ -52,13 +54,52 @@
 \section{INTRODUCTION}
 \label{sec:intro}  % \label{} allows reference to this section
 
-Astropy~\cite{2013A&A...558A..33A}\ldots
-DM Software~\cite{2004AAS...20510811A,2010SPIE.7740E..15A}
+The Large Synoptic Survey Telescope (LSST)\cite{2008arXiv0805.2366I} will be an 8.4\,m optical survey telescope sited in Chile\cite{2014SPIE.9145E..1AG} and capable of imaging the entire sky twice a week.
+The data rate of approximately 15\,TB per night\footnote{See \url{http://lsst.org/scientists/keynumbers} for additional numbers.} and the requirements to both issue alerts on transient sources within 60 seconds of observing and also to create annual data releases means that automated data management systems and data processing pipelines are a key deliverable of the LSST construction project\cite{2016_adassxxv_O3-1}.
 
+The LSST data processing pipeline software has been in development since 2004\cite{2004AAS...20510811A,2010SPIE.7740E..15A,2016_adassxxv_P056} and during this 16 years of development much has changed in the Python, C++ and astronomy software world.
+Sharing code between telescopes has long been...
 
-\acknowledgments
+\section{The LSST Science Pipeline Software}
 
-This material is based upon work supported in part by the National Science Foundation through Cooperative Support Agreement (CSA) Award No.\ AST-1227061 under Governing Cooperative Agreement 1258333 managed by the Association of Universities for Research in Astronomy (AURA), and the Department of Energy under Contract No.\ DE-AC02-76SF00515 with the SLAC National Accelerator Laboratory.
+As with other software developed in the early 2000s, such as CASA\cite{2012ASPC..461..849P}, the LSST science pipeline software is based on a C++ core with a Python control layer.
+The general layout of the code is shown in Fig.~\ref{fig:layers}.
+In this paper we focus on the algorithmic and framework code provided by the \texttt{afw} and \texttt{meas\_} packages as these are the packages that have most in common with the Astropy core package.
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[height=5cm]{Software-Layers}
+\end{center}
+\caption[layers]
+%>>>> use \label inside caption to get Fig. number with \ref{}
+{\label{fig:layers}
+Structure of the LSST data management software.
+At the bottom there are external packages (black), on the lower left (red) are the computationally intensive packages that are mainly written in C++ with SWIG wrappers making the code available in Python, and the remainder (blue) are mostly Python.}
+\end{figure}
+
+\begin{figure} [ht]
+\begin{center}
+\includegraphics[width=\textwidth]{exposure-dependencies}
+\end{center}
+\caption[layers]
+%>>>> use \label inside caption to get Fig. number with \ref{}
+{\label{fig:exposure}
+The classes that are used to define a \texttt{lsst.afw.image.ExposureX}.}
+\end{figure}
+
+\section{Astropy}
+
+Astropy\cite{2013A&A...558A..33A}\ldots
+
+\section{Synergies}
+
+\section{Integration Options}
+
+\section{Conclusions}
+
+\acknowledgments\
+
+This material is based upon work supported in part by the National Science Foundation through Cooperative Support Agreement (CSA) Award No.\ AST--1227061 under Governing Cooperative Agreement 1258333 managed by the Association of Universities for Research in Astronomy (AURA), and the Department of Energy under Contract No.\ DE--AC02--76SF00515 with the SLAC National Accelerator Laboratory.
 Additional LSST funding comes from private donations, grants to universities, and in-kind support from LSSTC Institutional Members.
 
 % References
