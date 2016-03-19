@@ -57,8 +57,13 @@
 The Large Synoptic Survey Telescope (LSST)\cite{2008arXiv0805.2366I} will be an 8.4\,m optical survey telescope sited in Chile\cite{2014SPIE.9145E..1AG} and capable of imaging the entire sky twice a week.
 The data rate of approximately 15\,TB per night\footnote{See \url{http://lsst.org/scientists/keynumbers} for additional numbers.} and the requirements to both issue alerts on transient sources within 60 seconds of observing and also to create annual data releases means that automated data management systems and data processing pipelines are a key deliverable of the LSST construction project\cite{2016_adassxxv_O3-1}.
 
+The difficulty of sharing code between telescopes has long been a topic of discussion in the astronomy software community\cite{1998ASPC..145..142M,1999ASPC..172...11E,2001ASSL..266..163S,2002SPIE.4844..321E}.
+Historically there have been some successes in fundamental libraries, such as SOFA, CFITSIO and wcslib, and in environments, such as IRAF, AIPS and Starlink.
+Despite these, there is still a tendency for a new project to embark on the creation of a new environment or software infrastructure if there are slight requirements mismatches and no external political will to adopt a specific software suite.
+The growth in the Open Source software movement\cite{2006OpenSources} and recent explosion in support tools such as git and GitHub for code sharing\cite{2014IACWSLima}, makes the process of software reuse far easier than it has ever been.
+
 The LSST data processing pipeline software has been in development since 2004\cite{2004AAS...20510811A,2010SPIE.7740E..15A,2016_adassxxv_P056} and during this 16 years of development much has changed in the Python, C++ and astronomy software world.
-Sharing code between telescopes has long been...
+
 
 \section{The LSST Science Pipeline Software}
 
