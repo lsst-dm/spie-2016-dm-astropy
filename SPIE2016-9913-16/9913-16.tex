@@ -131,6 +131,13 @@ It supports all the coordinate systems provided by the LSST package and many mor
 The LSST C++ code does not use any system other than ICRS therefore we are proposing to remove this package and replace it with a simple spherical coordinates class.
 All the Python code will then be modified to use \texttt{astropy.coordinates} and at the Python/C++ boundary coordinates will be converted to/from ICRS.
 
+\section{Tables}
+
+LSST and Astropy both have table libraries, but these have different data models and hence different strengths.
+LSST's are better for row-based access and provide a limited ORM layer that's valuable for pipeline use when the columns are known in advance and data are appended to the table, while Astropy's excel at column-based access and use in interactive analysis.
+Furthermore, Astropy tables now support export to PANDAS data frames\cite{mckinney-proc-scipy-2010}, opening up a richer environment for query-based analysis.
+We anticipate being able to do a lot by just creating AstroPy views to LSST table objects, thereby not doubling the memory requirements, and we have been able to put together a proof-of-concept implementation for doing this.
+
 \section{Integration Options}
 
 \section{Conclusions}
