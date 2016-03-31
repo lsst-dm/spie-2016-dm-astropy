@@ -98,6 +98,39 @@ Astropy\cite{2013A&A...558A..33A}\ldots
 
 \section{Synergies}
 
+\section{Suggested modifications to LSST}
+
+\subsection{Packaging}
+
+The LSST data management software uses the EUPS tool\cite{EUPS} to manage versions and dependencies.
+It is used to ensure that the versions of all packages used for a particular processing run can be assigned a single number and also to track the packages that were part of a single build.
+Development versions can easily be included along with versions from builds done in the past.
+This can significantly simplify debugging cycles and aid with provenance tracking but it is a complex environment with a steep learning curve and most users of LSST software outside of the data center and LSST developer community do not need this power.
+
+LSST packages are built using the SCons tool\footnote{\url{http://www.scons.org}}\cite{2005Scons1377085}.
+SCons is an alternative tool to Make and CMake that is written entirely in Python.
+This allows developers to use Python for their library code and build system whilst making use of the powerful source code dependency tracking provided by SCons to prevent wasteful recompilation of files that have not been affected by local edits.
+
+Unfortunately for SCons the majority of the Python community have adopted a simpler build system based around the convention of a \texttt{setup.py} file that can be executed to do the build.
+This file uses \texttt{distuils} or \texttt{setuptools} to determine what should be built and can handle most cases where external C/C++ code should be compiled into the Python package.
+There is a strong expectation that any packages made available to the Astropy community should follow the standard Python build convention of supporting \texttt{python setup.py build} and this is a requirement if we wish to make some LSST packages \emph{Astropy affiliated packages}.
+This also allows packages to be distributed on the Python Package Index (PyPI\footnote{\url{https://pypi.python.org}}) providing the ability for a general user to use \texttt{pip install lsst\_apps} to install the LSST software.
+
+As a proof of concept we have demonstrated that an LSST package using the standard LSST directory layout can be built using a \texttt{setuptools}.
+EUPS is used to determine dependencies and this information can be converted to a standard \texttt{setuptools} dependency request.
+To get this working on PyPI it is necessary either to generate the \texttt{setup.py} using a SCons target or else use EUPS directly in the \texttt{setup.py}.
+The latter would require that EUPS is also available from PyPI (it currently is not) but might be less prone to errors.
+
+\subsection{Astronomical Coordinates}
+
+The LSST \texttt{afw.coord} package provides coordinate conversions between ICRS, FK5, Galactic, ecliptic and topocentric coordinate systems.
+It is written in C++ and has no external dependencies on standard coordinate libraries.
+The \texttt{astropy.coordinates} package provides a very usable Python API on top of the standard ERFA astrometry C library\footnote{ERFA is a relicensed version of the standard SOFA library\cite{SOFA}.}.
+It supports all the coordinate systems provided by the LSST package and many more including FK4.
+
+The LSST C++ code does not use any system other than ICRS therefore we are proposing to remove this package and replace it with a simple spherical coordinates class.
+All the Python code will then be modified to use \texttt{astropy.coordinates} and at the Python/C++ boundary coordinates will be converted to/from ICRS.
+
 \section{Integration Options}
 
 \section{Conclusions}
