@@ -6,6 +6,10 @@
 \newcommand{\aap}{Astronomy \& Astrophysics}
 \newcommand{\procspie}{Proc.\ SPIE}
 \newcommand{\aspconf}{ASP Conf.\ Ser.}
+\newcommand{\qjras}{QJRAS}
+
+\newcommand{\ascl}[1]{\href{http://www.ascl.net/#1}{ascl:#1}}
+\newcommand{\arxiv}[1]{\href{http://arxiv.org/abs/#1}{arXiv:#1}}
 
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{graphicx}
@@ -58,18 +62,18 @@ The Large Synoptic Survey Telescope (LSST)\cite{2008arXiv0805.2366I} will be an 
 The data rate of approximately 15\,TB per night\footnote{See \url{http://lsst.org/scientists/keynumbers} for additional numbers.} and the requirements to both issue alerts on transient sources within 60 seconds of observing and also to create annual data releases means that automated data management systems and data processing pipelines are a key deliverable of the LSST construction project\cite{2016_adassxxv_O3-1}.
 
 The difficulty of sharing code between telescopes has long been a topic of discussion in the astronomy software community\cite{1998ASPC..145..142M,1999ASPC..172...11E,2001ASSL..266..163S,2002SPIE.4844..321E}.
-Historically there have been some successes in fundamental libraries, such as SOFA, CFITSIO and wcslib, and in environments, such as IRAF, AIPS and Starlink.
+Historically there have been some successes in fundamental libraries, such as SOFA\cite{2011SchpJ...611404H}, CFITSIO\cite{1999ASPC..172..487P} and wcslib\cite{2011ascl.soft08003C}, and in environments, such as IRAF\cite{1986SPIE..627..733T}, AIPS\cite{1996ASPC..101...37V} and Starlink\cite{1982QJRAS..23..485D}.
 Despite these, there is still a tendency for a new project to embark on the creation of a new environment or software infrastructure if there are slight requirements mismatches and no external political will to adopt a specific software suite.
 The growth in the Open Source software movement\cite{2006OpenSources} and recent explosion in support tools such as git and GitHub for code sharing\cite{2014IACWSLima}, makes the process of software reuse far easier than it has ever been.
 
-The LSST data processing pipeline software has been in development since 2004\cite{2004AAS...20510811A,2010SPIE.7740E..15A,2016_adassxxv_P056} and during this 16 years of development much has changed in the Python, C++ and astronomy software world.
+The LSST data processing pipeline software has been in development since 2004\cite{2004AAS...20510811A,2010SPIE.7740E..15A,2016_adassxxv_P056} and during these 16 years of development much has changed in the Python, C++ and astronomy software world.
 
 
 \section{The LSST Science Pipeline Software}
 
 As with other software developed in the early 2000s, such as CASA\cite{2012ASPC..461..849P}, the LSST science pipeline software is based on a C++ core with a Python control layer.
 The general layout of the code is shown in Fig.~\ref{fig:layers}.
-In this paper we focus on the algorithmic and framework code provided by the \texttt{afw} and \texttt{meas\_} packages as these are the packages that have most in common with the Astropy core package.
+In this paper we focus on the algorithmic and framework code provided by the \texttt{afw} and \texttt{meas\_} packages as these are the packages that have most in common with the Astropy core and affiliated packages.
 
 \begin{figure} [ht]
 \begin{center}
@@ -94,7 +98,10 @@ The classes that are used to define a \texttt{lsst.afw.image.ExposureX}.}
 
 \section{Astropy}
 
-Astropy\cite{2013A&A...558A..33A}\ldots
+Python has become the de facto standard programming language for astronomy\cite{2000ASPC..216...59G,2006ASPC..351..343H,2006ASPC..351..497K,2011ASPC..442..425G,2012SPIE.8451E..02J} and is now the default choice for new projects and for teaching.
+The Astropy\cite{2013A&A...558A..33A} project grew out of a support mailing list in 2011 to become a very successful hub for the development of Python packages for astronomy.
+Astropy has two key concepts.
+The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy}; the second is to support and encourage the concept of \emph{affiliate} packages that are packages that use the \texttt{astropy} package and follow the same
 
 \section{Synergies}
 
