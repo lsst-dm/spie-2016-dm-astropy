@@ -10,6 +10,7 @@
 
 \newcommand{\ascl}[1]{\href{http://www.ascl.net/#1}{ascl:#1}}
 \newcommand{\arxiv}[1]{\href{http://arxiv.org/abs/#1}{arXiv:#1}}
+\newcommand{\doi}[1]{\href{http://dx.doi.org/#1}{doi:#1}}
 
 \usepackage{amsmath,amsfonts,amssymb}
 \usepackage{graphicx}
@@ -58,7 +59,7 @@
 \section{INTRODUCTION}
 \label{sec:intro}  % \label{} allows reference to this section
 
-The Large Synoptic Survey Telescope (LSST)\cite{2008arXiv0805.2366I} will be an 8.4\,m optical survey telescope sited in Chile\cite{2014SPIE.9145E..1AG} and capable of imaging the entire sky twice a week.
+The Large Synoptic Survey Telescope (LSST)\cite{2008arXiv0805.2366I,2016SPIE-Kahn} will be an 8.4\,m optical survey telescope sited in Chile\cite{2014SPIE.9145E..1AG} and capable of imaging the entire sky twice a week.
 The data rate of approximately 15\,TB per night\footnote{See \url{http://lsst.org/scientists/keynumbers} for additional numbers.} and the requirements to both issue alerts on transient sources within 60 seconds of observing and also to create annual data releases means that automated data management systems and data processing pipelines are a key deliverable of the LSST construction project\cite{2016_adassxxv_O3-1}.
 
 The difficulty of sharing code between telescopes has long been a topic of discussion in the astronomy software community\cite{1998ASPC..145..142M,1999ASPC..172...11E,2001ASSL..266..163S,2002SPIE.4844..321E}.
@@ -66,16 +67,16 @@ Historically there have been some successes in fundamental libraries, such as SO
 Despite these, there is still a tendency for a new project to embark on the creation of a new environment or software infrastructure if there are slight requirements mismatches and no external political will to adopt a specific software suite.
 The growth in the Open Source software movement\cite{2006OpenSources} and recent explosion in support tools such as git and GitHub for code sharing\cite{2014IACWSLima}, makes the process of software reuse far easier than it has ever been.
 
-The LSST data processing pipeline software has been in development since 2004\cite{2004AAS...20510811A,2010SPIE.7740E..15A,2016_adassxxv_P056} and during these 16 years of development much has changed in the Python, C++ and astronomy software world.
+The LSST data processing pipeline software has been in development as an open source project since 2004\cite{2004AAS...20510811A,2010SPIE.7740E..15A,2016_adassxxv_P056} and during these 16 years of development much has changed in the Python, C++ and astronomy software world.
 
 
 \section{The LSST Science Pipeline Software}
 
-As with other software developed in the early 2000s, such as CASA\cite{2012ASPC..461..849P}, the LSST science pipeline software is based on a C++ core with a Python control layer.
+As with other software developed in the early 2000s, such as CASA\cite{2012ASPC..461..849P}, the LSST science pipeline software is based on a C++ core with a Python control layer, where the Python/C++ interface layer is handled via SWIG\cite{beazley2003automated} bindings.
 The general layout of the code is shown in Fig.~\ref{fig:layers}.
-In this paper we focus on the algorithmic and framework code provided by the \texttt{afw} and \texttt{meas\_} packages as these are the packages that have most in common with the Astropy core and affiliated packages.
+At the time of writing the LSST science pipelines codebase is split between C++ and Python with of order 105,000 lines of Python and 125,000 lines of C++\footnote{This total does not include comment or blank lines, nor does it include the 80,000 lines of Python and 1.6\,million lines of C++ generated for the SWIG wrappers.}.
 
-\begin{figure} [ht]
+\begin{figure} [t]
 \begin{center}
 \includegraphics[height=5cm]{Software-Layers}
 \end{center}
@@ -86,26 +87,121 @@ Structure of the LSST data management software.
 At the bottom there are external packages (black), on the lower left (red) are the computationally intensive packages that are mainly written in C++ with SWIG wrappers making the code available in Python, and the remainder (blue) are mostly Python.}
 \end{figure}
 
-\begin{figure} [ht]
+The software is spread among many different root packages within the \texttt{lsst} namespace:
+
+\begin{description}
+\item[\textbf{afw}] These provide core LSST functionality including geometric shapes, images, source detection, convolution and high-level exposure objects.
+
+\item[\textbf{daf}] The data access framework, also known as \emph{the Butler}, provides an abstraction layer hiding data formats and locations from the user and providing them with standardized Python objects representing the data.
+
+\item[\textbf{ip}] Image processing algorithms such as instrument signature removal and image differencing.
+
+\item[\textbf{meas}] Measurement algorithms.
+
+\item[\textbf{obs}] Observatory plugins to teach the system how to handle files from different instruments.
+
+\item[\textbf{pipe}] Pipeline processing infrastructure. This allows discrete units of computation to be linked together to form pipelines.
+
+\end{description}
+
+In terms of overlap with Astropy and affiliate packages the AFW and \texttt{meas} packages are most relevant for immediate investigation.
+
+
+\section{Astropy}
+
+Python has become the de facto standard programming language for astronomy\cite{2000ASPC..216...59G,2006ASPC..351..343H,2006ASPC..351..497K,2011ASPC..442..425G,2012SPIE.8451E..02J} and is now the default choice for new projects and for teaching.
+The Astropy\cite{2013A&A...558A..33A} project grew out of a support mailing list in 2011 to become a very successful hub for the development of Python packages for astronomy.
+At the time of writing Astropy consists of approximately 105,000 lines of Python code.
+Astropy has two key approaches to drive adoption.
+The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy} to provide a solid, well tested, base for astronomy software development; the second is to support and encourage the concept of \emph{affiliate} packages that are packages that use the \texttt{astropy} package and follow the same philosophy on distribution and openness.
+Together these aim to provide a \emph{one stop shop} for people trying to use Python in their astronomical research.
+
+\section{Synergies}
+
+The Astropy and LSST software projects are both attempting to write astronomical software in Python that will benefit the community.
+In LSST's case we are constrained by the requirements of MREFC funding to deliver a data management system on schedule and on budget and we can justify involvement with Astropy if it allows us to deliver the functionality without impacting schedule, or if opening up the LSST algorithms to the Astropy community encourages early adoption (through ease of installation) which can lead to more extensive testing.
+Additionally, the community will be encouraged to try out the LSST software sooner if it integrates well with Astropy and this will significantly enhance usage of the Level 3 processing system during LSST operations.
+In this section we look at the areas where collaboration between LSST and Astropy can enhance both projects.
+
+\subsection{Generalized Word Coordinate Systems}
+
+JWST and LSST have requirements for accurate world coordinate conversions that can not be represented in the current FITS-WCS framework\cite{2013ASPC..475...49H,2002A&A...395.1077C} and none of the current extensions handling focal plane distortions are suitably flexible\cite{2012SPIE.8451E..1MS,2012tpv}.
+This lack of flexibility in FITS-WCS has been a long standing issue and the Starlink AST library\cite{Berry201633} provides one solution to this problem that has been in use for nearly 20 years.
+For JWST a pure-Python equivalent, gWCS, is in development\cite{2016_P028_adassxxv} and is not yet part of Astropy but builds on the \texttt{astropy.modeling} framework.
+LSST is expecting to require very efficient world coordinate transformations to be performed in the C++ layer.
+This effectively rules out direct adoption of gWCS by LSST but it would be beneficial to both parties if any future LSST WCS implementation could interoperate with gWCS.
+We are therefore investigating a text-based serialization of WCS that could be usable as an interchange format.
+AST currently supports a number of serialization schemes including multiple dialects of FITS headers, STC-S\cite{2007ivoa.spec.1030R} for region handling\cite{2010ASPC..434..213B} and an internal text-based format.
+gWCS can serialize to FITS-WCS and also into YAML using the Advanced Scientific Data Format (ASDF)\cite{2015A&C....12..240G}.
+We have decided to investigate a common format that is based on YAML and the proposed new variant of STC, version 2.0.
+STC-2\cite{2015ivoaSTC2} is an evolution of STC that includes support for chainable mappings and seems like it could be a suitable starting point for this investigation.
+Both the Astropy and IVOA communities would benefit if such a standard could be established and it could be a significant factor in bringing together the competing distortion models currently in use in the FITS community.
+
+\subsection{Region handling}
+
+The handling of regions, such as circles and polygons, in either Cartesian pixel coordinates or spherical world coordinates or with discrete pixelized or analytic form (Table~\ref{tab:regions}), is not yet supported in Astropy core.
+The \texttt{photutils} affiliated Astropy package has some basic support for analytic regions in pixel coordinates for photometry and work has recently started on a regions package that can properly handle spherical geometry and world coordinate versions translated to pixels.
+LSST has its own spherical geometry package in C++, \texttt{lsst::sphgeom}, and we should compare implementations with the STScI spherical geometry library (mainly written in Python) that is being proposed for integration into Astropy.
+There is currently a focus within Astropy on handling region files from the DS9 application\cite{2005ASPC..347..110J} but there have also been discussions concerning adopting the IVOA STC standard\cite{2007ivoa.spec.1030R} as a region serialization format.
+STC-S is already being used to define sky regions in the VO community and is also understood by the GAIA visualization tool\cite{2009ASPC..411..575D} and Starlink software\cite{2010ASPC..434..213B,2014ASPC..485..391C}.
+If Astropy and LSST can not share sky to pixel region handling code directly there is a possibility that STC could be adopted to allowe interoperability.
+
+\begin{table}[t]
+\centering
+\caption{Four distinct types of region. This paper discusses all except discrete spherical.}
+\label{tab:regions}
+\vspace{10pt}
+\begin{tabular}{ccc}
+  Discrete Spherical & $\Longleftrightarrow$ & Discrete Cartesian \\
+  $\Updownarrow$ & &  $\Updownarrow$ \\
+  Geometric Spherical & $\Longleftrightarrow$ & Geometric Cartesian \\
+\end{tabular}
+\end{table}
+
+Astropy has no plans for a discretized efficient representation of a pixel region and this is something that LSST can contribute to the Astropy region handling package.
+In LSST a \emph{footprint} is a compact serialized representation of a mask, listing the pixel indices that contribute to the shape in rasterized order, using a run-length encoding algorithm to conserve space.
+A \emph{heavy footprint} is a \emph{footprint} that includes the pixel values themselves.
+These are the items that can be passed to measurement algorithms.
+\emph{Footprints} are used extensively in the LSST code base and would be a useful addition to Astropy.
+
+There are no plans currently in either project to handle sky pixelization representations of regions, such as multi-order coverage maps (MOC)\cite{2012ASPC..461..347F,2014ivoa.spec.0602F} or other approaches\cite{2015A&A...580A.132R}.
+
+\subsection{LSST Measurement Algorithms}
+
+There are a number of measurement algorithms in LSST that could be made available as Astropy affiliate packages\cite{bosch_2016_48435}.
+The initial idea is to release the LSST equivalents of a subset of the Astromatic suite\cite{2012ASSP...29...71B}.
+This would have the advantage of providing a simple way to test the process for migrating native LSST measurement algorithm code to the Astropy ecosystem in a form that is easily validatable by the community.
+Once complete it should then be possible to consider migrating the more advanced LSST algorithms.
+Making them available in this way should aid adoption by the wider community and provide early feedback as to the quality of the algorithms and detect any bugs or anomalous behavior well before commissioning of LSST begins.
+
+\subsection{NDData}
+
+The Astropy \texttt{NDData} class is an implementation of the common astronomy data structure\cite{2015A&C....12..146J} of a data array, mask and uncertainty with attached metadata.
+LSST has an \texttt{Exposure} class (one for each underlying data type) represented by a \texttt{MaskedImage} and structured metadata.
+The class layout of an \texttt{Exposure} is shown in Fig.~\ref{fig:exposure}.
+It would be beneficial if an LSST \texttt{Exposure} could implement the \texttt{NDData} interface.
+The mask in an \texttt{Exposure} is a bit mask and not a Boolean mask and the uncertainties are always represented as variances (although covariance has been discussed).
+These are supportable as sub-classes and variants of them are already available in the Astropy ecosystem.
+One item that is currently missing from the Astropy arena is the notion of a pixel origin.
+In LSST the pixel origin can be used to specify the coordinates of the data array relative to a parent data array, such as allowing the coordinates of image cutouts to reference where they came from in the parent.
+LSST nomenclature is to use \emph{PARENT} to indicate the abstract pixel coordinate and \emph{LOCAL} to indicate that the coordinates are relative to the 0-based origin of the data array itself\footnote{The Starlink nomenclature\cite{2015A&C....12..146J} is \emph{PIXEL} and \emph{GRID} where \emph{GRID} follows the FITS convention of starting at 1.}.
+This attachment of a data array to a parent pixel coordinate system is a critical item and we plan to work with Astropy on making this functionality available to \texttt{NDData} users.
+
+\begin{figure} [t]
 \begin{center}
 \includegraphics[width=\textwidth]{exposure-dependencies}
 \end{center}
 \caption[layers]
 %>>>> use \label inside caption to get Fig. number with \ref{}
 {\label{fig:exposure}
-The classes that are used to define a \texttt{lsst.afw.image.ExposureX}.}
+The LSST classes that are used to define a \texttt{lsst.afw.image.Exposure}.}
 \end{figure}
 
-\section{Astropy}
-
-Python has become the de facto standard programming language for astronomy\cite{2000ASPC..216...59G,2006ASPC..351..343H,2006ASPC..351..497K,2011ASPC..442..425G,2012SPIE.8451E..02J} and is now the default choice for new projects and for teaching.
-The Astropy\cite{2013A&A...558A..33A} project grew out of a support mailing list in 2011 to become a very successful hub for the development of Python packages for astronomy.
-Astropy has two key concepts.
-The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy}; the second is to support and encourage the concept of \emph{affiliate} packages that are packages that use the \texttt{astropy} package and follow the same
-
-\section{Synergies}
-
 \section{Suggested modifications to LSST}
+
+In addition to working with the Astropy community, there is also the question of how integrated the LSST software system should be with Astropy.
+This covers the adoption of distribution standards and use of Astropy classes in our codebase.
+These changes will result in a more supportable and sustainable codebase allowing LSST to focus on core deliverables without having to support general infrastructure.
 
 \subsection{Packaging}
 
@@ -123,7 +219,7 @@ This file uses \texttt{distuils} or \texttt{setuptools} to determine what should
 There is a strong expectation that any packages made available to the Astropy community should follow the standard Python build convention of supporting \texttt{python setup.py build} and this is a requirement if we wish to make some LSST packages \emph{Astropy affiliated packages}.
 This also allows packages to be distributed on the Python Package Index (PyPI\footnote{\url{https://pypi.python.org}}) providing the ability for a general user to use \texttt{pip install lsst\_apps} to install the LSST software.
 
-As a proof of concept we have demonstrated that an LSST package using the standard LSST directory layout can be built using a \texttt{setuptools}.
+As a proof of concept we have demonstrated that an LSST package using the standard LSST directory layout can be built using \texttt{setuptools}.
 EUPS is used to determine dependencies and this information can be converted to a standard \texttt{setuptools} dependency request.
 To get this working on PyPI it is necessary either to generate the \texttt{setup.py} using a SCons target or else use EUPS directly in the \texttt{setup.py}.
 The latter would require that EUPS is also available from PyPI (it currently is not) but might be less prone to errors.
@@ -132,25 +228,71 @@ The latter would require that EUPS is also available from PyPI (it currently is 
 
 The LSST \texttt{afw.coord} package provides coordinate conversions between ICRS, FK5, Galactic, ecliptic and topocentric coordinate systems.
 It is written in C++ and has no external dependencies on standard coordinate libraries.
-The \texttt{astropy.coordinates} package provides a very usable Python API on top of the standard ERFA astrometry C library\footnote{ERFA is a relicensed version of the standard SOFA library\cite{SOFA}.}.
+The \texttt{astropy.coordinates} package provides a very usable Python API on top of the standard ERFA astrometry C library\footnote{ERFA is a relicensed version of the standard SOFA library\cite{2011SchpJ...611404H}.}.
 It supports all the coordinate systems provided by the LSST package and many more including FK4.
 
 The LSST C++ code does not use any system other than ICRS therefore we are proposing to remove this package and replace it with a simple spherical coordinates class.
 All the Python code will then be modified to use \texttt{astropy.coordinates} and at the Python/C++ boundary coordinates will be converted to/from ICRS.
 
-\section{Tables}
+\subsection{Tables}
 
 LSST and Astropy both have table libraries, but these have different data models and hence different strengths.
 LSST's are better for row-based access and provide a limited ORM layer that's valuable for pipeline use when the columns are known in advance and data are appended to the table, while Astropy's excel at column-based access and use in interactive analysis.
 Furthermore, Astropy tables now support export to PANDAS data frames\cite{mckinney-proc-scipy-2010}, opening up a richer environment for query-based analysis.
 We anticipate being able to do a lot by just creating AstroPy views to LSST table objects, thereby not doubling the memory requirements, and we have been able to put together a proof-of-concept implementation for doing this.
+This will make LSST tables far more accessible to general users and provide a far richer ecosystem of visualization and debugging tools than would be possible if LSST were required to write their own code.
 
-\section{Integration Options}
+\subsection{C++ Bindings}
 
-\section{Conclusions}
+The LSST Data Management team adopted SWIG as the standard method for providing a Python interface to the C++ code.
+Astropy has adopted Cython\cite{2010/content/aip/journal/cise/13/2/10.1109/MCSE.2010.118} when it is required to call C code.
+The Astropy project has no hard rules concerning how C/C++ code should be included in affiliate package but has a strong preference for Cython.
+LSST is not averse to switching away from SWIG (which results in massive code bloat and extended compile times as currently implemented) and has agreed to investigate Cython\cite{dmtn-013} and pybind11\cite{dmtn-014}\footnote{\url{http://pybind11.readthedocs.org/}}.
+One critical requirement is that if we were to move away from SWIG we must be able to do so in an incremental way and so it must be possible for a C++ object produced from SWIG to be passed into a C++ interface created with the alternate approach.
+
+\subsection{Quantities and Units}
+
+With the exception of an angle class, LSST does not use any unit conversion machinery.
+Astropy quantities, a value with an associated unit, are a very powerful class in Astropy that can remove an entire category of bugs from scientific software by ensuring that mathematical operations between quantities use compatible units.
+For heavily used public APIs it would seem to be clear that arguments should be quantities wherever possible.
+The question for LSST is how far down in the stack quantities should be used given the performance hit associated with quantities over plain variables.
+Additionally, how much more complicated does the C++/python interface become if SWIG has to be taught how to convert quantities to the correct form before passing the value to the C++.
+This is especially critical for large arrays, supplied externally, being passed through where we do not want to do a copy operation before entering C++ and also do not want to normalize units for millions of data points at that time.
+Large data arrays and, in particular, table columns returned from C++ layers would benefit from being returned as quantities, as this gives much more flexibility to users of the data and minimizes the risk of misinterpretation of values if units are later changed for a column or the user relies entirely on documentation to interpret values.
+The proposal is that LSST software adopts quantities on a case-by-case basis and are continuously on the look out for  any performance impact associated with quantities.
+
+\section{Proposal}
+
+The concrete proposals from this investigation are therefore:
+
+\begin{itemize}
+\item Change EUPS packaging to use a \texttt{setup.py} and upload it to PyPI.
+\item Investigate the addition of a \texttt{setup.py} for standard LSST Python packages in addition to our current Scons-based build system.
+\item Support export of LSST tables to Astropy tables.
+\item Determine whether STC-2 is a suitable basis for WCS interoperability.
+\item Remove LSST astronomical coordinate classes and replace with Astropy coordinates in Python and a generic spherical coordinates class in C++.
+\item Investigate migration away from SWIG for C++ bindings.
+\item Contribute the LSST \emph{footprint} code to Astropy.
+\item Create an Astropy affiliated package from the AFW detection package.
+\item Investigate rationalizing of LSST and Astropy spherical geometry region handling.
+\item Modify \texttt{Exposure} to implement an \texttt{NDData}-like interface.
+\item Work with the Astropy project to add required functionality such as pixel origins to \texttt{NDData}.
+\item LSST will allow Astropy quantity objects to be used in public interfaces on a case by case basis.
+
+\end{itemize}
+
+With these changes implemented LSST will have a solid base from which to assess whether it is feasible to migrate more LSST code to the community as affiliated packages.
+It is probable that LSST will start to migrate the existing codebase entirely to Astropy classes where appropriate classes exist, and in particular adopt \texttt{astropy.time} and \texttt{astropy.coordinates} as soon as possible.
+
+\section{Conclusion}
+
+The LSST project has a code base that has developed over a number of years and has been developed independently of the wider Python astronomy software community.
+We have looked at the Astropy package and worked with the Astropy team to understand areas where synergies exist and where LSST can contribute more fully to the community without delaying our primary deliverables.
+The proposals outlined in this document go a long way towards integrating LSST into the wider software community and should bring key benefits to LSST and research astronomers.
 
 \acknowledgments\
 
+We thank those who attended the LSST/Astropy Summit at the University of Washington in March 2016 that forms the basis for the approaches outlined in this paper.
 This material is based upon work supported in part by the National Science Foundation through Cooperative Support Agreement (CSA) Award No.\ AST--1227061 under Governing Cooperative Agreement 1258333 managed by the Association of Universities for Research in Astronomy (AURA), and the Department of Energy under Contract No.\ DE--AC02--76SF00515 with the SLAC National Accelerator Laboratory.
 Additional LSST funding comes from private donations, grants to universities, and in-kind support from LSSTC Institutional Members.
 
