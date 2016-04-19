@@ -127,12 +127,12 @@ In this section we look at the areas where collaboration between LSST and Astrop
 
 JWST and LSST have requirements for accurate world coordinate conversions that can not be represented in the current FITS-WCS framework\cite{2013ASPC..475...49H,2002A&A...395.1077C,2015A&C....12..133T} and none of the current extensions handling focal plane distortions are suitably flexible\cite{2012SPIE.8451E..1MS,2012tpv}.
 This lack of flexibility in FITS-WCS has been a long standing issue and the Starlink AST library\cite{Berry201633} provides one solution to this problem that has been in use for nearly 20 years.
-For JWST a pure-Python equivalent, gWCS, is in development\cite{2016_P028_adassxxv} and is not yet part of Astropy but builds on the \texttt{astropy.modeling} framework.
+For JWST a pure-Python equivalent, GWCS, is in development\cite{2016_P028_adassxxv} and is not yet part of Astropy but builds on the \texttt{astropy.modeling} framework.
 LSST is expecting to require very efficient world coordinate transformations to be performed in the C++ layer.
-This effectively rules out direct adoption of gWCS by LSST but it would be beneficial to both parties if any future LSST WCS implementation could interoperate with gWCS.
+This effectively rules out direct adoption of GWCS by LSST but it would be beneficial to both parties if any future LSST WCS implementation could interoperate with GWCS.
 We are therefore investigating a text-based serialization of WCS that could be usable as an interchange format.
 AST currently supports a number of serialization schemes including multiple dialects of FITS headers, STC-S\cite{2007ivoa.spec.1030R} for region handling\cite{2010ASPC..434..213B} and an internal text-based format.
-gWCS can serialize to FITS-WCS and also into YAML using the Advanced Scientific Data Format (ASDF)\cite{2015A&C....12..240G}.
+GWCS can serialize to FITS-WCS and also into YAML using the Advanced Scientific Data Format (ASDF)\cite{2015A&C....12..240G}.
 We have decided to investigate a common format that is based on YAML and the proposed new variant of STC, version 2.0.
 STC-2\cite{2015ivoaSTC2} is an evolution of STC that includes support for chainable mappings and seems like it could be a suitable starting point for this investigation.
 Both the Astropy and IVOA communities would benefit if such a standard could be established and it could be a significant factor in bringing together the competing distortion models currently in use in the FITS community.
