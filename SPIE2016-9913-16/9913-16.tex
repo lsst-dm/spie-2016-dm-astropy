@@ -125,7 +125,7 @@ In this section we look at the areas where collaboration between LSST and Astrop
 
 \subsection{Generalized Word Coordinate Systems}
 
-JWST and LSST have requirements for accurate world coordinate conversions that can not be represented in the current FITS-WCS framework\cite{2013ASPC..475...49H,2002A&A...395.1077C} and none of the current extensions handling focal plane distortions are suitably flexible\cite{2012SPIE.8451E..1MS,2012tpv}.
+JWST and LSST have requirements for accurate world coordinate conversions that can not be represented in the current FITS-WCS framework\cite{2013ASPC..475...49H,2002A&A...395.1077C,2015A&C....12..133T} and none of the current extensions handling focal plane distortions are suitably flexible\cite{2012SPIE.8451E..1MS,2012tpv}.
 This lack of flexibility in FITS-WCS has been a long standing issue and the Starlink AST library\cite{Berry201633} provides one solution to this problem that has been in use for nearly 20 years.
 For JWST a pure-Python equivalent, gWCS, is in development\cite{2016_P028_adassxxv} and is not yet part of Astropy but builds on the \texttt{astropy.modeling} framework.
 LSST is expecting to require very efficient world coordinate transformations to be performed in the C++ layer.
