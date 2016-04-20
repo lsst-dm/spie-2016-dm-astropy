@@ -1,0 +1,20 @@
+sudo: required
+dist: trusty
+before_install:
+  - "sudo apt-get update && sudo apt-get install -y --no-install-recommends texlive-fonts-recommended texlive-latex-extra texlive-fonts-extra dvipng texlive-latex-recommended latexmk"
+script:
+  - latexmk -bibtex -pdf -f -cd SPIE2016-9913-16/9913-16.tex
+before_deploy: ./predeploy.sh
+deploy:
+  provider: s3
+  access_key_id: AKIAJQTXPK2NYX2KHS7Q
+  secret_access_key:
+    secure: MZVTcGUMf9dggeEfDEHwZH2g7GeThZTgrKLjY4xKjj19e0LwdYcGBzsBIbuNPXeBqIe0bhC20JCHKndlsT41QY0loHRq7o0o7aOw60Ca4oqEM/Hhsxhwp/5E9j9YPXPO1yAMyoHnHPuMhkxpuJRxQWVR9I/rBQJstxealIy5ZMmtB+PTmCO9N6Yb8UOGXVmvmbgOie6qG27Pwbuked605zLMN5Bwpfn1S4p12exZyXVbw31jU15OjI/FS4gS2tzSp7wHpmPQftwe6Z3fEz2R4utd/iTXbxOMKO4/DfcP4W5YIPjyk4baQFNI6+gcnT0Dy6NoIK6pgKnAztV23l60nmzbqIrSJPGkm1soVOYAUdmmKR47XBAygUrXMTNuX11AwLJSgKCXc4psILGI/CE5bfy4ZHmpNyh7ibf8E4aVfRExB7bnAR0wXt+6WxDwxts2Y+h7W5gpKnnRaPGh9oMvUkidxf7iMHbgszzOICIsiEoTSIKisWDwsmZZOzvQMlvjL1vh/553WaxqZjknE+eHyoMfKVUaJvr1Y0ZeOvxli5mSqOU7W0ac3J1U/txG/bdtU+YB9asBlJkzDH1LGBpRG/3PKSIBBXrqDZ5D6/jGSrh10EmncZQbpxeHCZ8RxTJ3TJoWZsJ0E9l93D0p6mwSKD8hEM/6WZlBNxGbB7ZYDXs=
+  bucket: lsst-dm-paper-ci
+  region: us-west-2
+  upload-dir: SPIE2016-9913-16
+  local-dir: deploy
+  skip_cleanup: true
+  on:
+    all_branches: true
+    repo: lsst-dm/astropy-integration
