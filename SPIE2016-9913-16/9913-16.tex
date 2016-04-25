@@ -226,7 +226,7 @@ LSST packages are built using the SCons tool\footnote{\url{http://www.scons.org}
 SCons is an alternative tool to Make and CMake that is written entirely in Python.
 This allows developers to use Python for their library code and build system whilst making use of the powerful source code dependency tracking provided by SCons to prevent wasteful recompilation of files that have not been affected by local edits.
 
-Unfortunately for SCons the majority of the Python community have adopted a simpler build system based around the convention of a \texttt{setup.py} file that can be executed to do the build.
+The majority of the Python community have adopted a build system based around the convention of a \texttt{setup.py} file that can be executed to do the build.
 This file uses \texttt{distuils} or \texttt{setuptools} to determine what should be built and can handle most cases where external C/C++ code should be compiled into the Python package.
 There is a strong expectation that any packages made available to the Astropy community should follow the standard Python build convention of supporting \texttt{python setup.py build} and this is a requirement if we wish to make some LSST packages \emph{Astropy affiliated packages}.
 This also allows packages to be distributed on the Python Package Index (PyPI\footnote{\url{https://pypi.python.org}}) providing the ability for a general user to use \texttt{pip install lsst\_apps} to install the LSST software.
