@@ -159,6 +159,18 @@ If Astropy and LSST cannot share sky to pixel region handling code directly ther
 \end{table}
 
 Astropy has no plans for a discretized efficient representation of a pixel region and this is something that LSST can contribute to the Astropy region handling package.
+
+\begin{figure} [t]
+\begin{center}
+\includegraphics[width=\textwidth]{footprint}
+\end{center}
+\caption[footprint]
+%>>>> use \label inside caption to get Fig. number with \ref{}
+{\label{fig:footprint}
+LSST's \texttt{Footprint} data structure.
+A \texttt{Footprint} describes a pixelized region as a sequence of \texttt{Spans}, each of which holds the y position and minimum and maximum x positions.  A \texttt{HeavyFootprint} combines a \texttt{Footprint} with the values of the pixels it covers by simply storing the pixels of each span back-to-back.}
+\end{figure}
+
 In LSST a \emph{footprint} is a compact serialized representation of a mask, listing the pixel indices that contribute to the shape in rasterized order, using a run-length encoding algorithm to conserve space.
 A \emph{heavy footprint} is a \emph{footprint} that includes the pixel values themselves.
 These are the items that can be passed to measurement algorithms.
