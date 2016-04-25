@@ -265,7 +265,7 @@ One critical requirement is that if we were to move away from SWIG we must be ab
 \subsection{Quantities and Units}
 
 With the exception of an angle class, LSST does not use any unit conversion machinery.
-Astropy quantities, a value with an associated unit, are a very powerful class in Astropy that can remove an entire category of bugs from scientific software by ensuring that mathematical operations between quantities use compatible units.
+Astropy's \texttt{Quantity}, a value with an associated unit, is a very powerful class that can remove an entire category of bugs from scientific software by ensuring that mathematical operations between quantities use compatible units.
 For heavily used public APIs it would seem to be clear that arguments should be quantities wherever possible.
 The question for LSST is how far down in the stack quantities should be used given the performance hit associated with quantities over plain variables.
 Additionally, how much more complicated does the C++/python interface become if SWIG has to be taught how to convert quantities to the correct form before passing the value to the C++.
