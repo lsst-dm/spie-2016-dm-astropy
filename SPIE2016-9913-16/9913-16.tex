@@ -113,7 +113,7 @@ Python has become the de facto standard programming language for astronomy\cite{
 The Astropy\cite{2013A&A...558A..33A} project grew out of a support mailing list in 2011 to become a very successful hub for the development of Python packages for astronomy.
 At the time of writing Astropy consists of approximately 105,000 lines of Python code.
 Astropy has two key approaches to drive adoption.
-The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy} to provide a solid, well tested, base for astronomy software development; the second is to support and encourage the concept of \emph{affiliate} packages that are packages that use the \texttt{astropy} package and follow the same philosophy on distribution and openness.
+The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy} to provide a solid, well tested, base for astronomy software development; the second is to support and encourage the concept of \emph{affiliated} packages that are packages that use the \texttt{astropy} package and follow the same philosophy on distribution and openness.
 Together these aim to provide a \emph{one stop shop} for people trying to use Python in their astronomical research.
 
 \section{Synergies}
@@ -176,11 +176,11 @@ A \emph{heavy footprint} is a \emph{footprint} that includes the pixel values th
 These are the items that can be passed to measurement algorithms.
 \emph{Footprints} are used extensively in the LSST code base and would be a useful addition to Astropy.
 
-There are no plans currently in either project to handle sky pixelization representations of regions, such as multi-order coverage maps (MOC)\cite{2012ASPC..461..347F,2014ivoa.spec.0602F} or other approaches\cite{2015A&A...580A.132R}.
+There are no plans currently in either project to handle sky pixelization representations of regions, such as Multi-Order Coverage maps (MOC)\cite{2012ASPC..461..347F,2014ivoa.spec.0602F} or other approaches\cite{2015A&A...580A.132R}.
 
 \subsection{LSST Measurement Algorithms}
 
-There are a number of measurement algorithms in LSST that could be made available as Astropy affiliate packages\cite{bosch_2016_48435}.
+There are a number of measurement algorithms in LSST that could be made available as Astropy affiliated packages\cite{bosch_2016_48435}.
 The initial idea is to release the LSST equivalents of a subset of the Astromatic suite\cite{2012ASSP...29...71B}.
 This would have the advantage of providing a simple way to test the process for migrating native LSST measurement algorithm code to the Astropy ecosystem in a form that is easily validatable by the community.
 Once complete it should then be possible to consider migrating the more advanced LSST algorithms.
@@ -226,7 +226,7 @@ LSST packages are built using the SCons tool\footnote{\url{http://www.scons.org}
 SCons is an alternative tool to Make and CMake that is written entirely in Python.
 This allows developers to use Python for their library code and build system whilst making use of the powerful source code dependency tracking provided by SCons to prevent wasteful recompilation of files that have not been affected by local edits.
 
-Unfortunately for SCons the majority of the Python community have adopted a simpler build system based around the convention of a \texttt{setup.py} file that can be executed to do the build.
+The majority of the Python community have adopted a build system based around the convention of a \texttt{setup.py} file that can be executed to do the build.
 This file uses \texttt{distuils} or \texttt{setuptools} to determine what should be built and can handle most cases where external C/C++ code should be compiled into the Python package.
 There is a strong expectation that any packages made available to the Astropy community should follow the standard Python build convention of supporting \texttt{python setup.py build} and this is a requirement if we wish to make some LSST packages \emph{Astropy affiliated packages}.
 This also allows packages to be distributed on the Python Package Index (PyPI\footnote{\url{https://pypi.python.org}}) providing the ability for a general user to use \texttt{pip install lsst\_apps} to install the LSST software.
@@ -258,14 +258,16 @@ This will make LSST tables far more accessible to general users and provide a fa
 
 The LSST Data Management team adopted SWIG as the standard method for providing a Python interface to the C++ code.
 Astropy has adopted Cython\cite{2010/content/aip/journal/cise/13/2/10.1109/MCSE.2010.118} when it is required to call C code.
-The Astropy project has no hard rules concerning how C/C++ code should be included in affiliate package but has a strong preference for Cython.
+The Astropy project has no hard rules concerning how C/C++ code should be included in an affiliated package but has a strong preference for Cython.
 LSST is not averse to switching away from SWIG (which results in massive code bloat and extended compile times as currently implemented) and has agreed to investigate Cython\cite{dmtn-013} and pybind11\cite{dmtn-014}\footnote{\url{http://pybind11.readthedocs.org/}}.
 One critical requirement is that if we were to move away from SWIG we must be able to do so in an incremental way and so it must be possible for a C++ object produced from SWIG to be passed into a C++ interface created with the alternate approach.
 
 \subsection{Quantities and Units}
 
 With the exception of an angle class, LSST does not use any unit conversion machinery.
-Astropy quantities, a value with an associated unit, are a very powerful class in Astropy that can remove an entire category of bugs from scientific software by ensuring that mathematical operations between quantities use compatible units.
+Astropy's \texttt{Quantity}, a value with an associated unit, is a very powerful class that can remove an entire category of bugs from scientific software by ensuring that mathematical operations between quantities use compatible units.
+The units package in Astropy has been adapted from the units classes in the
+\texttt{pynbody} analysis module\cite{pynbody}.
 For heavily used public APIs it would seem to be clear that arguments should be quantities wherever possible.
 The question for LSST is how far down in the stack quantities should be used given the performance hit associated with quantities over plain variables.
 Additionally, how much more complicated does the C++/python interface become if SWIG has to be taught how to convert quantities to the correct form before passing the value to the C++.
