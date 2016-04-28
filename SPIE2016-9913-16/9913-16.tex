@@ -115,7 +115,7 @@ Python has become the dominanry programming language for astronomy\cite{2000ASPC
 The Astropy\cite{2013A&A...558A..33A} project grew out of a support mailing list in 2011 to become a very successful hub for the development of Python packages for astronomy.
 At the time of writing Astropy consists of approximately 105,000 lines of Python code.
 Astropy has two key approaches to drive adoption.
-The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy} to provide a solid, well tested, base for astronomy software development; the second is to support and encourage the concept of \emph{affiliated} packages that are packages that use the \texttt{astropy} package and follow the same philosophy on distribution and openness.
+The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy} to provide a solid, well tested, base for astronomy software development; the second is to support and encourage the concept of \emph{affiliated} packages, which use the \texttt{astropy} package and follow the same philosophy on distribution and openness.
 Together these aim to provide a ``one stop shop'' for people trying to use Python in their astronomical research.
 
 \section{Synergies}
@@ -146,26 +146,26 @@ Both the Astropy and IVOA communities would benefit if such a standard could be 
 
 \subsection{Region handling}
 
-The handling of regions, such as circles and polygons, in either Cartesian pixel coordinates or spherical world coordinates or with discrete pixelized or analytic form (Table~\ref{tab:regions}), is not yet supported in Astropy core.
-The \texttt{photutils} affiliated Astropy package has some basic support for analytic regions in pixel coordinates for photometry and work has recently started on a regions package that can properly handle spherical geometry and world coordinate versions translated to pixels.
-LSST has its own spherical geometry package in C++, \texttt{lsst::sphgeom}, and we should compare implementations with the STScI spherical geometry library (mainly written in Python) that is being proposed for integration into Astropy.
+The handling of regions, such as circles and polygons, is not yet supported in Astropy core, in either Cartesian pixel coordinates or spherical world coordinates or with discrete pixelized or analytic form (Fig.~\ref{fig:regions}).
+The \texttt{photutils} affiliated Astropy package has some basic support for analytic regions in pixel coordinates for photometry, and work has recently started on a regions package that can properly handle spherical geometry and world coordinate versions translated to pixels.
+LSST has its own spherical geometry package in C++, \texttt{lsst::sphgeom}, and LSST plan to compare its implementation with the STScI spherical geometry library (mainly written in Python) that is being proposed for integration into Astropy.
 There is currently a focus within Astropy on handling region files from the DS9 application\cite{2005ASPC..347..110J} but there have also been discussions concerning adopting the IVOA STC standard\cite{2007ivoa.spec.1030R} as a region serialization format.
 STC-S is already being used to define sky regions in the VO community and is also understood by the GAIA visualization tool\cite{2009ASPC..411..575D} and Starlink software\cite{2010ASPC..434..213B,2014ASPC..485..391C}.
 If Astropy and LSST cannot share sky to pixel region handling code directly there is a possibility that STC could be adopted to allow interoperability.
 
-\begin{table}[t]
+\begin{figure}[t]
 \centering
-\caption{Four distinct types of region. This paper discusses all except discrete spherical.}
-\label{tab:regions}
-\vspace{10pt}
 \begin{tabular}{ccc}
   Discrete Spherical & $\Longleftrightarrow$ & Discrete Cartesian \\
   $\Updownarrow$ & &  $\Updownarrow$ \\
   Geometric Spherical & $\Longleftrightarrow$ & Geometric Cartesian \\
 \end{tabular}
-\end{table}
+\vspace{10pt}
+\caption{Four distinct types of region. This paper discusses all except discrete spherical.}
+\label{fig:regions}
+\end{figure}
 
-Astropy has no plans for a discretized efficient representation of a pixel region and this is something that LSST can contribute to the Astropy region handling package.
+Astropy has no immediate plans for a discretized efficient representation of a pixel region, and this is something that LSST can contribute to the Astropy region handling package.
 
 \begin{figure} [t]
 \begin{center}
@@ -178,10 +178,10 @@ LSST's \texttt{Footprint} data structure.
 A \texttt{Footprint} describes a pixelized region as a sequence of \texttt{Spans}, each of which holds the y position and minimum and maximum x positions.  A \texttt{HeavyFootprint} combines a \texttt{Footprint} with the values of the pixels it covers by simply storing the pixels of each span back-to-back.}
 \end{figure}
 
-In LSST a \emph{footprint} is a compact serialized representation of a mask, listing the pixel indices that contribute to the shape in rasterized order, using a run-length encoding algorithm to conserve space.
-A \emph{heavy footprint} is a \emph{footprint} that includes the pixel values themselves.
+In LSST a \texttt{Footprint} is a compact serialized representation of a mask, listing the pixel indices that contribute to the shape in rasterized order, using a run-length encoding algorithm to conserve space.
+A \texttt{HeavyFootprint} is a \texttt{Footprint} that includes the pixel values themselves.
 These are the items that can be passed to measurement algorithms.
-\emph{Footprints} are used extensively in the LSST code base and would be a useful addition to Astropy.
+\texttt{Footprint} objects are used extensively in the LSST code base and would be a useful addition to Astropy.
 
 There are no plans currently in either project to handle sky pixelization representations of regions, such as Multi-Order Coverage maps (MOC)\cite{2012ASPC..461..347F,2014ivoa.spec.0602F} or other approaches\cite{2015A&A...580A.132R}.
 
