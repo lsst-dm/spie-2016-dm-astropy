@@ -111,11 +111,11 @@ In terms of overlap with Astropy and affiliate packages the \texttt{afw} and \te
 
 \section{Astropy}
 
-Python has become the dominanry programming language for astronomy\cite{2000ASPC..216...59G,2006ASPC..351..343H,2006ASPC..351..497K,2011ASPC..442..425G,2012SPIE.8451E..02J} and is now the default choice for new projects and for teaching.
+Python has become the dominant programming language for astronomy\cite{2000ASPC..216...59G,2006ASPC..351..343H,2006ASPC..351..497K,2011ASPC..442..425G,2012SPIE.8451E..02J} and is now the default choice for new projects and for teaching.
 The Astropy\cite{2013A&A...558A..33A} project grew out of a support mailing list in 2011 to become a very successful hub for the development of Python packages for astronomy.
 At the time of writing Astropy consists of approximately 105,000 lines of Python code.
 Astropy has two key approaches to drive adoption.
-The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy} to provide a solid, well tested, base for astronomy software development; the second is to support and encourage the concept of \emph{affiliated} packages, which use the \texttt{astropy} package and follow the same philosophy on distribution and openness.
+The first is to place generic astronomy code into the \emph{core} package that is brought in via \texttt{import astropy} to provide a solid, well-tested base for astronomy software development; the second is to support and encourage the concept of \emph{affiliated} packages, which use the \texttt{astropy} package and follow the same philosophy on distribution and openness.
 Together these aim to provide a ``one stop shop'' for people trying to use Python in their astronomical research.
 
 \section{Synergies}
@@ -183,7 +183,9 @@ A \texttt{HeavyFootprint} is a \texttt{Footprint} that includes the pixel values
 These are the items that can be passed to measurement algorithms.
 \texttt{Footprint} objects are used extensively in the LSST code base and would be a useful addition to Astropy.
 
-There are no plans currently in either project to handle sky pixelization representations of regions, such as Multi-Order Coverage maps (MOC)\cite{2012ASPC..461..347F,2014ivoa.spec.0602F} or other approaches\cite{2015A&A...580A.132R}.
+LSST are planning to make their sky pixelization C++ code, supporting schemes such as HTM\cite{2001misk.conf..631K} and Q3C\cite{2006ASPC..351..735K}, available in Python.
+There are currently no plans to handle Multi-Order Coverage maps (MOC)\cite{2012ASPC..461..347F,2014ivoa.spec.0602F} or other HEALPix approaches\cite{2015A&A...580A.132R}.
+As the Astropy regions package develops, it may be reasonable for LSST to also donate this code to Astropy.
 
 \subsection{LSST Measurement Algorithms}
 
@@ -204,7 +206,7 @@ The Astropy \texttt{NDData} class is an implementation of the common astronomy d
 LSST has an \texttt{Exposure} class (one for each underlying data type) represented by a \texttt{MaskedImage} and structured metadata.
 The class layout of an \texttt{Exposure} is shown in Fig.~\ref{fig:exposure}.
 It would be beneficial if an LSST \texttt{Exposure} could implement the \texttt{NDData} interface.
-The mask in an \texttt{Exposure} is a bit mask and not a Boolean mask and the uncertainties are always represented as variances (although covariance has been discussed).
+The mask in an \texttt{Exposure} is a bit mask, allowing each bit to represent a different reason for masking, and not a Boolean mask and the uncertainties are always represented as variances (although covariance has been discussed).
 These are supportable as sub-classes and variants of them are already available in the Astropy ecosystem.
 One item that is currently missing from the Astropy arena is the notion of a pixel origin.
 In LSST the pixel origin can be used to specify the coordinates of the data array relative to a parent data array, such as allowing the coordinates of image cutouts to reference where they came from in the parent.
@@ -237,8 +239,9 @@ The LSST data management software uses the EUPS tool\cite{EUPS} to manage versio
 It is used to ensure that the versions of all packages used for a particular processing run can be assigned a single number and also to track the packages that were part of a single build.
 Development versions can easily be included along with versions from builds done in the past.
 This can significantly simplify debugging cycles and aid with provenance tracking but it is a complex environment with a steep learning curve and most users of LSST software outside of the data center and LSST developer community do not need this power.
+EUPS can be thought of as a more powerful Python virtual environment where each package can have a specific version enabled to allow mixing and matching of multiple packages, rather than just having entire installations in different virtual environments.
 
-LSST packages are built using the SCons tool\footnote{\url{http://www.scons.org}}\cite{2005Scons1377085}.
+LSST packages are built using the SCons tool\cite{2005Scons1377085}.
 SCons is an alternative tool to Make and CMake that is written entirely in Python.
 This allows developers to use Python for their library code and build system whilst making use of the powerful source code dependency tracking provided by SCons to prevent wasteful recompilation of files that have not been affected by local edits.
 
@@ -259,7 +262,7 @@ It is written in C++ and has no external dependencies on standard coordinate lib
 The \texttt{astropy.coordinates} package provides a very usable Python API on top of the standard ERFA astrometry C library\footnote{ERFA is a relicensed version of the standard SOFA library\cite{2011SchpJ...611404H}.}.
 It supports all the coordinate systems provided by the LSST package and many more including FK4.
 
-The LSST C++ code does not use any system other than ICRS therefore we are proposing to remove this package and replace it with a simple spherical coordinates class.
+The LSST C++ code does not use any system other than ICRS; therefore we are proposing to remove this package and replace it with a simple spherical coordinates class.
 All the Python code will then be modified to use \texttt{astropy.coordinates} and at the Python/C++ boundary coordinates will be converted to/from ICRS.
 
 \subsection{Tables}
@@ -267,16 +270,18 @@ All the Python code will then be modified to use \texttt{astropy.coordinates} an
 LSST and Astropy both have table libraries, but these have different data models and hence different strengths.
 LSST's are better for row-based access and provide a limited ORM layer that's valuable for pipeline use when the columns are known in advance and data are appended to the table, while Astropy's excel at column-based access and use in interactive analysis.
 Furthermore, Astropy tables now support export to pandas DataFrames\cite{mckinney-proc-scipy-2010}, opening up a richer environment for query-based analysis.
-We anticipate being able to do a lot by just creating Astropy views to LSST table objects, thereby not doubling the memory requirements, and we have been able to put together a proof-of-concept implementation for doing this.
-This will make LSST tables far more accessible to general users and provide a far richer ecosystem of visualization and debugging tools than would be possible if LSST were required to write their own code.
+However, the LSST and Astropy table data models are similar enough to allow read-write, memory-sharing Astropy views to LSST tables to be constructed in Python, and a proof-of-concept implementation of this functionality has already been developed.
+As this view interface improves, consumers of table-based LSST data products will be able to simply use Astropy tools for analysis, removing much of the need for LSST to develop its own support for many table operations.
 
 \subsection{C++ Bindings}
 
 The LSST Data Management team adopted SWIG as the standard method for providing a Python interface to the C++ code.
 Astropy has adopted Cython\cite{2010/content/aip/journal/cise/13/2/10.1109/MCSE.2010.118} when it is required to call C code.
+The Astropy core libraries currently do not call C++, and while Cython support for C++ exists, this support is relatively new and somewhat experimental.
 The Astropy project has no hard rules concerning how C/C++ code should be included in an affiliated package but has a strong preference for Cython.
 LSST is not averse to switching away from SWIG (which results in massive code bloat and extended compile times as currently implemented) and has agreed to investigate Cython\cite{dmtn-013} and pybind11\cite{dmtn-014}\footnote{\url{http://pybind11.readthedocs.org/}}.
-One critical requirement is that if we were to move away from SWIG we must be able to do so in an incremental way and so it must be possible for a C++ object produced from SWIG to be passed into a C++ interface created with the alternate approach.
+One critical requirement is that any move away from SWIG we must be able to do so in an incremental way and so it must be possible for a C++ object produced from SWIG to be passed into a C++ interface created with the new approach.
+This has been demonstrated successfully as part of the Cython and pybind11 investigations.
 
 \subsection{Quantities and Units}
 
@@ -288,7 +293,17 @@ The question for LSST is how far down in the stack quantities should be used giv
 Additionally, how much more complicated does the C++/python interface become if SWIG has to be taught how to convert quantities to the correct form before passing the value to the C++.
 This is especially critical for large arrays, supplied externally, being passed through where we do not want to do a copy operation before entering C++ and also do not want to normalize units for millions of data points at that time.
 Large data arrays and, in particular, table columns returned from C++ layers would benefit from being returned as quantities, as this gives much more flexibility to users of the data and minimizes the risk of misinterpretation of values if units are later changed for a column or the user relies entirely on documentation to interpret values.
-The proposal is that LSST software adopts quantities on a case-by-case basis and are continuously on the look out for  any performance impact associated with quantities.
+The proposal is that LSST software adopts quantities on a case-by-case basis, and its developers will be continuously on the lookout for any performance impact associated with quantities.
+
+\subsection{Time}
+
+LSST uses a C++ time class, \texttt{lsst::daf::base::DateTime} to provide basic time conversion functionality for Modified Julian Dates and UTC.
+The Astropy \texttt{astropy.time} package has far more functionality and adopting it in Python LSST code is quite attractive.
+The complication is in how to make a Python view of a \texttt{daf\_base} time object look like an \texttt{astropy.time} and vice versa when crossing the Python/C++ boundary.
+One way forward may be to implement the C++ class using \texttt{astropy.time} objects.
+An experimental implementation does exist demonstrating that this can be made to work, although more experimentation is required.
+In particular, Python calling C++ that calls Python can be relatively brittle and can break if there is a Python shared library mismatch.
+Also, C++ calling Python in a loop will be much slower than calling C++ and the C++ caller could be surprised by a big performance change if the implementation of the C++ library is changed to use Python.
 
 \section{Proposal}
 
@@ -297,12 +312,13 @@ The concrete proposals from this investigation are therefore:
 \begin{itemize}
 \item Change EUPS packaging to use a \texttt{setup.py} and upload it to PyPI.
 \item Investigate the addition of a \texttt{setup.py} for standard LSST Python packages in addition to our current Scons-based build system.
-\item Support export of LSST tables to Astropy tables.
-\item Determine whether STC-2 is a suitable basis for WCS interoperability.
+\item Support views of LSST tables as Astropy tables.
+\item Determine whether STC-2, in YAML form, is a suitable basis for WCS interoperability.
 \item Remove LSST astronomical coordinate classes and replace with Astropy coordinates in Python and a generic spherical coordinates class in C++.
+\item Consider using \texttt{astropy.time}, even in C++.
 \item Investigate migration away from SWIG for C++ bindings.
-\item Contribute the LSST \emph{footprint} code to Astropy.
-\item Create an Astropy affiliated package from the AFW detection package.
+\item Contribute the LSST \texttt{Footprint} code to Astropy.
+\item Create an Astropy affiliated package from the \texttt{afw.detection} package.
 \item Investigate rationalizing of LSST and Astropy spherical geometry region handling.
 \item Modify \texttt{Exposure} to implement an \texttt{NDData}-like interface.
 \item Work with the Astropy project to add required functionality such as pixel origins to \texttt{NDData}.
@@ -311,13 +327,16 @@ The concrete proposals from this investigation are therefore:
 \end{itemize}
 
 With these changes implemented LSST will have a solid base from which to assess whether it is feasible to migrate more LSST code to the community as affiliated packages.
-It is probable that LSST will start to migrate the existing codebase entirely to Astropy classes where appropriate classes exist, and in particular adopt \texttt{astropy.time} and \texttt{astropy.coordinates} as soon as possible.
+It is probable that LSST will start to migrate the existing codebase entirely to Astropy classes where appropriate classes exist.
+In particular \texttt{astropy.coordinates} could be adopted fairly rapidly.
+Switching time libraries may require significantly more thought.
 
 \section{Conclusion}
 
 The LSST project has a code base that has developed over a number of years and has been developed independently of the wider Python astronomy software community.
 We have looked at the Astropy package and worked with the Astropy team to understand areas where synergies exist and where LSST can contribute more fully to the community without delaying our primary deliverables.
 The proposals outlined in this document go a long way towards integrating LSST into the wider software community and should bring key benefits to LSST and research astronomers.
+Work on these changes has already begun and the intent is to allocate significant effort to this migration in the second half of 2016.
 
 \acknowledgments\
 
