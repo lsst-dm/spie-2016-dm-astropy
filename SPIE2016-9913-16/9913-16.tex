@@ -96,7 +96,7 @@ The software is spread among many different root packages within the \texttt{lss
 
 \item[\textbf{ip}] Image processing algorithms such as instrument signature removal and image differencing.
 
-\item[\textbf{meas}] Measurement algorithms.
+\item[\textbf{meas}] Algorithms focused on processing individual sources in an image, including PSF modeling, WCS fitting, and source detection, deblending, and measurement.
 
 \item[\textbf{obs}] Observatory plugins to teach the system how to handle files from different instruments.
 
@@ -180,11 +180,16 @@ There are no plans currently in either project to handle sky pixelization repres
 
 \subsection{LSST Measurement Algorithms}
 
-There are a number of measurement algorithms in LSST that could be made available as Astropy affiliated packages\cite{bosch_2016_48435}.
-The initial idea is to release the LSST equivalents of a subset of the Astromatic suite\cite{2012ASSP...29...71B}.
-This would have the advantage of providing a simple way to test the process for migrating native LSST measurement algorithm code to the Astropy ecosystem in a form that is easily validatable by the community.
-Once complete it should then be possible to consider migrating the more advanced LSST algorithms.
+There are a number of high-level algorithms in LSST that could be made available as Astropy affiliated packages\cite{bosch_2016_48435}, including all of the steps necessary to build basic catalogs from images and combine images to build coadds.
+This is essentially the same functionality as the popular Astromatic suite\cite{2012ASSP...29...71B}, but with different algorithms and an interface that is already more Python-friendly than Astromatic's combination of command-line tools and configuration file.
+Repackaging just the source detection, deblending, and measurement algorithms (roughly equivalent to Astromatic's ubiquitous SExtractor) as Astropy affiliate packages would make a very important subset of LSST's algorithms more readily available to a broader commmunity.
 Making them available in this way should aid adoption by the wider community and provide early feedback as to the quality of the algorithms and detect any bugs or anomalous behavior well before commissioning of LSST begins.
+
+Unfortunately, it is difficult to disentangle these algorithms from the lower-level LSST primitive classes they build on, and hence an independent Astropy affiliate package with this functionality will likely depend on not just integrating LSST's region, image, and table classes with Astropy, but spinning these off as Astropy affiliate (or perhaps core) packages as well.
+A more feasible approach to making these algorithms available to the Astropy community may be to focus on making all of LSST's packaging more Astropy-friendly (see Section~\ref{sec:packaging}), rather than repackaging algorithms as Astropy affiliates.
+
+Regardless of the packaging, allowing users to seamlessly call these algorithms from code that exists in the Astropy ecosystem is one of the more important goals in Astropy/LSST integration; it would provide the Astropy community with high-quality implementations of important astronmical algorithms that are not currently available in Python, while providing LSST with feedback and testing on some of its most important components.
+Unfortunately, due to its dependency on virtually every other integration effort discussed in this paper, it is likely not a short-term goal.
 
 \subsection{NDData}
 
@@ -216,6 +221,8 @@ This covers the adoption of distribution standards and use of Astropy classes in
 These changes will result in a more supportable and sustainable codebase allowing LSST to focus on core deliverables without having to support general infrastructure.
 
 \subsection{Packaging}
+
+\label{sec:packaging}
 
 The LSST data management software uses the EUPS tool\cite{EUPS} to manage versions and dependencies.
 It is used to ensure that the versions of all packages used for a particular processing run can be assigned a single number and also to track the packages that were part of a single build.
