@@ -141,7 +141,7 @@ In Section~\ref{sec:lsstmods} we address the areas where LSST can benefit direct
 The James Webb Space Telescope (JWST)\cite{2006SSRv..123..485G} and LSST have requirements for accurate world coordinate conversions that cannot be represented in the current FITS World Coordinate Systems (FITS-WCS) framework\cite{2013ASPC..475...49H,2002A&A...395.1077C,2015A&C....12..133T} and none of the current extensions handling focal plane distortions\cite{2012SPIE.8451E..1MS,2012tpv} are suitably flexible.
 This lack of flexibility in FITS-WCS has been a long standing issue and the Starlink AST library\cite{Berry201633} provides one solution to this problem that has been in use for nearly 20 years.
 For JWST a pure-Python equivalent, the Generalized World Coordinate Systems (GWCS) package, is in development\cite{2016_P028_adassxxv} and is not yet part of Astropy but builds on the \texttt{astropy.modeling} framework.
-LSST expects to require world coordinate transformations to be performed in the C++ layer for performance reasons, and this may preclude direct adoption of GWCS by LSST, given the perofmrance limitations of a pure-Python implementation.
+LSST expects to require world coordinate transformations to be performed in the C++ layer for performance reasons, and this may preclude direct adoption of GWCS by LSST, given the performance limitations of a pure-Python implementation.
 It would be beneficial to both parties if the future LSST WCS implementation and GWCS could interoperate easily.
 We are therefore investigating a text-based serialization of WCS that could be usable as an interchange format.
 AST currently supports a number of serialization schemes including multiple dialects of FITS headers, the International Virtual Observatory Alliance (IVOA)\footnote{\url{http://www.ivoa.net}} Space-Time Coordinate Linear String format (STC-S)\cite{2007ivoa.spec.1030R} for region handling\cite{2010ASPC..434..213B} and an internal text-based format.
@@ -197,13 +197,13 @@ As the Astropy regions package develops, it may be reasonable for LSST to also d
 
 There are a number of high-level algorithms in LSST that could be made available as Astropy affiliated packages\cite{bosch_2016_48435}, including all of the steps necessary to build basic catalogs from images and combine images to build coadds.
 This is essentially the same functionality as the popular Astromatic suite\cite{2012ASSP...29...71B}, but with different algorithms and an interface that is already more Python-friendly than Astromatic's combination of command-line tools and configuration file.
-Repackaging just the source detection, deblending, and measurement algorithms (roughly equivalent to Astromatic's ubiquitous SExtractor) as Astropy affiliate packages would make a very important subset of LSST's algorithms more readily available to a broader commmunity.
+Repackaging just the source detection, deblending, and measurement algorithms (roughly equivalent to Astromatic's ubiquitous SExtractor) as Astropy affiliate packages would make a very important subset of LSST's algorithms more readily available to a broader community.
 Making them available in this way should aid adoption by the wider community and provide early feedback as to the quality of the algorithms and detect any bugs or anomalous behavior well before commissioning of LSST begins.
 
 Unfortunately, it is difficult to disentangle these algorithms from the lower-level LSST primitive classes they build on, and hence an independent Astropy affiliate package with this functionality will likely depend on not just integrating LSST's region, image, and table classes with Astropy, but spinning these off as Astropy affiliate (or perhaps core) packages as well.
 A more feasible approach to making these algorithms available to the Astropy community may be to focus on making all of LSST's packaging more Astropy-friendly (see Section~\ref{sec:packaging}), rather than repackaging algorithms as Astropy affiliates.
 
-Regardless of the packaging, allowing users to seamlessly call these algorithms from code that exists in the Astropy ecosystem is one of the more important goals in Astropy/LSST integration; it would provide the Astropy community with high-quality implementations of important astronmical algorithms that are not currently available in Python, while providing LSST with feedback and testing on some of its most important components.
+Regardless of the packaging, allowing users to seamlessly call these algorithms from code that exists in the Astropy ecosystem is one of the more important goals in Astropy/LSST integration; it would provide the Astropy community with high-quality implementations of important astronomical algorithms that are not currently available in Python, while providing LSST with feedback and testing on some of its most important components.
 Unfortunately, due to its dependency on virtually every other integration effort discussed in this paper, it is likely not a short-term goal.
 
 \subsection{NDData}
@@ -252,7 +252,7 @@ SCons is an alternative tool to Make and CMake that is written entirely in Pytho
 This allows developers to use Python for their library code and build system whilst making use of the powerful source code dependency tracking provided by SCons to prevent wasteful recompilation of files that have not been affected by local edits.
 
 The majority of the Python community have adopted a build system based around the convention of a \texttt{setup.py} file that can be executed to do the build.
-This file uses \texttt{distuils} or \texttt{setuptools} to determine what should be built and can handle most cases where external C/C++ code should be compiled into the Python package.
+This file uses \texttt{distutils} or \texttt{setuptools} to determine what should be built and can handle most cases where external C/C++ code should be compiled into the Python package.
 There is a strong expectation that any packages made available to the Astropy community should follow the standard Python build convention of supporting \texttt{python setup.py build} and this is a requirement if we wish to make some LSST packages \emph{Astropy affiliated packages}.
 This also allows packages to be distributed on the Python Package Index (PyPI\footnote{\url{https://pypi.python.org}}) providing the ability for a general user to use \texttt{pip install lsst\_apps} to install the LSST software.
 
