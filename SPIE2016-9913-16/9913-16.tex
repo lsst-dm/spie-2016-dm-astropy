@@ -162,7 +162,7 @@ Both the Astropy and IVOA communities would benefit if such a standard could be 
 \subsection{Region handling}
 
 The handling of regions, such as circles and polygons, is not yet supported in Astropy core, in either Cartesian pixel coordinates or spherical world coordinates or with discrete pixelized or analytic form (Fig.~\ref{fig:regions}).
-The \texttt{photutils} affiliated Astropy package has some basic support for analytic regions in pixel coordinates for photometry, and work has recently started on a regions package that can properly handle spherical geometry and world coordinate versions translated to pixels.
+The \texttt{photutils} affiliated Astropy package has some basic support for analytic regions in pixel coordinates for photometry, and work has recently started on a regions package\footnote{\url{https://github.com/astropy/regions}} that can properly handle spherical geometry and world coordinate versions translated to pixels.
 LSST has its own spherical geometry package in C++, \texttt{lsst::sphgeom}, and LSST plan to compare its implementation with the STScI spherical geometry library (mainly written in Python) that is being proposed for integration into Astropy.
 There is currently a focus within Astropy on handling region files from the DS9 application\cite{2005ASPC..347..110J} but there have also been discussions concerning adopting the IVOA STC standard\cite{2007ivoa.spec.1030R} as a region serialization format.
 STC-S is already being used to define sky regions in the VO community and is also understood by the GAIA visualization tool\cite{2009ASPC..411..575D} and Starlink software\cite{2010ASPC..434..213B,2014ASPC..485..391C}.
