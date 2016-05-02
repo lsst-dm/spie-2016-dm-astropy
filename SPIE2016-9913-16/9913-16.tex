@@ -200,9 +200,9 @@ Most of the above work focuses on the lower half of Figure~\ref{fig:regions}, bu
 Pixelizing LSST geometries instead typically involves yet another class: \texttt{afw.detection.Footprint} (Figure~\ref{fig:footprint}).
 \texttt{Footprint} is a compact serialized representation of a mask, listing the pixel indices that contribute to the shape in rasterized order, using a run-length encoding algorithm to conserve space.
 A \texttt{HeavyFootprint} is a \texttt{Footprint} that includes the pixel values themselves.
-\texttt{Footprint} is a critical component of LSST's detection algorithm, as it is used to represent an above-threshold region in an image (similar SExtractor's ``segmentation map'').
+\texttt{Footprint} is a critical component of LSST's detection algorithm, as it is used to represent an above-threshold region in an image (similar to SExtractor's ``segmentation map'').
 Similarly, \texttt{HeavyFootprint} plays an important role in deblending and source measurement, where it is used to define the (fractional) pixel values that define a deblended object.
-\texttt{Footprint} and \texttt{HeavyFootprint} represent a convient intermediate between geometries and images, but their current interfaces reflect a C++-centric design (though they are also available in Python, of course).
+\texttt{Footprint} and \texttt{HeavyFootprint} represent a convenient intermediate between geometries and images, but their current interfaces reflect a C++-centric design (though they are also available in Python, of course).
 A Python-centric redesign of these interfaces as part of LSST's involvement in Astropy's unified region library could yield valuable dividends, particularly in providing natural and efficient vectorization over irregular regions in images.
 
 LSST does have some C++ code for sky pixelization (upper left of Figure~\ref{fig:regions}), supporting schemes such as HTM\cite{2001misk.conf..631K} and Q3C\cite{2006ASPC..351..735K}.
