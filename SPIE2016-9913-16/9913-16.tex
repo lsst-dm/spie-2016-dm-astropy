@@ -119,6 +119,11 @@ The software is spread among many different root packages within the \texttt{lss
 
 \end{description}
 
+The LSST code base currently contains additional components that are not of short-term interest for Astropy integration but might become so in the longer run.
+These include the Data Butler and the Task framework.
+The Butler is a client library for generic data access that abstracts away details of serialization, data storage, and data transport as well as providing facilities for handling simple versioning and time-based data access with validity ranges.
+The Task framework provides a way of packaging science algorithms so that they can be executed in a data-parallel fashion, with further extensions to allow MPI-based tightly-synchronized execution.
+The framework includes a Python-based configuration language that has default values, overrides from code as well as the end user, and hooks for validation of configured values.
 In terms of overlap with Astropy and affiliate packages the \texttt{afw} and \texttt{meas} packages are most relevant for immediate investigation.
 
 The algorithms in the LSST codebase are not yet at the level of scientific quality ultimately needed for LSST, but they are already being used to process data from the Hyper Suprime-Cam Survey on the Subaru telescope\cite{2012SPIE.8446E..0ZM}, one of the major precursors surveys for LSST, and generally represent the current state-of-the-art.
