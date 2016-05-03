@@ -67,7 +67,7 @@
 \label{sec:intro}  % \label{} allows reference to this section
 
 One major component of the Data Management system\cite{2016_adassxxv_O3-1} for the Large Synoptic Survey Telescope (LSST)\cite{2008arXiv0805.2366I,2016SPIE-Kahn,2014SPIE.9145E..1AG} is a software pipeline capable of reducing LSST images to catalogs during both low-latency nightly and high-throughput data release processing.
-This pipeline must be able to process data promptly from the 3.2~gigapixel camera\footnote{This equates to approximately 15\,TB per night. See \url{http://lsst.org/scientists/keynumbers} for additional numbers.} and issue alerts on transient sources within 60 seconds of observing.
+This pipeline must be able to process data promptly from the 3.2~gigapixel camera\footnote{This equates to approximately 15\,TB per night. See \url{http://lsst.org/scientists/keynumbers} for additional numbers.} and issue alerts on transient sources within 60 seconds of observing\cite{2014htu..conf...19K}.
 It must also be able to efficiently process the 11 data releases that will be made during the ten year survey.
 
 In addition to efficiency, the LSST pipelines must also provide unprecedented levels of control over systematic errors across a broad range of scientific domains.
@@ -100,12 +100,13 @@ Structure of the LSST data management software.
 At the bottom there are external packages (black), on the lower left (red) are the computationally intensive packages that are mainly written in C++ with SWIG wrappers making the code available in Python, and the remainder (blue) are mostly Python.}
 \end{figure}
 
-The software is spread among many different root packages within the \texttt{lsst} namespace:
+The software is spread among many different LSST root packages:
 
 \begin{description}
-\item[\textbf{afw}] These provide core LSST utility classes including geometric shapes, images, source detection, convolution and high-level exposure objects.
+\item[\textbf{afw}] Provides core LSST utility classes including geometric shapes, images, source detection, convolution and high-level exposure objects.
 
-\item[\textbf{daf}] The data access framework, also known as \emph{the Data Butler}, provides an abstraction layer hiding data formats and locations from the user and providing them with standardized Python objects representing the data.
+\item[\textbf{daf}] The data access framework, also known as \emph{the Data Butler}, provides an abstraction layer hiding data formats, data transport and locations from the user and providing them with standardized Python objects representing the data.
+It provides facilities for handling simple versioning and time-based data access with validity ranges.
 
 \item[\textbf{ip}] Low-level image processing algorithms such as instrument signature removal and image differencing.
 
@@ -116,14 +117,13 @@ The software is spread among many different root packages within the \texttt{lss
 \item[\textbf{pipe\_base}] Pipeline processing infrastructure. This allows discrete units of computation to be linked together to form pipelines.
 
 \item[\textbf{pipe\_tasks}] High-level algorithms, including initial exposure-level processing and calibration, image coaddition (with sophisticated artifact rejection and coaddition of PSF models), and consistent multi-passband processing of coadds to measure colors.
+The Task framework provides a way of packaging science algorithms so that they can be executed in a data-parallel fashion, with further extensions to allow MPI-based tightly-synchronized execution.
+The framework includes a Python-based configuration language that has default values, overrides from code as well as the end user, and hooks for validation of configured values.
 
 \end{description}
 
-The LSST code base currently contains additional components that are not of short-term interest for Astropy integration but might become so in the longer run.
+The LSST code base currently contains components that are not of short-term interest for Astropy integration but might become so in the longer run given related work by Astropy contributors in some of these areas.
 These include the Data Butler and the Task framework.
-The Butler is a client library for generic data access that abstracts away details of serialization, data storage, and data transport as well as providing facilities for handling simple versioning and time-based data access with validity ranges.
-The Task framework provides a way of packaging science algorithms so that they can be executed in a data-parallel fashion, with further extensions to allow MPI-based tightly-synchronized execution.
-The framework includes a Python-based configuration language that has default values, overrides from code as well as the end user, and hooks for validation of configured values.
 In terms of overlap with Astropy and affiliate packages the \texttt{afw} and \texttt{meas} packages are most relevant for immediate investigation.
 
 The algorithms in the LSST codebase are not yet at the level of scientific quality ultimately needed for LSST, but they are already being used to process data from the Hyper Suprime-Cam Survey on the Subaru telescope\cite{2012SPIE.8446E..0ZM}, one of the major precursors surveys for LSST, and generally represent the current state-of-the-art.
@@ -144,7 +144,7 @@ The LSST project is constrained by the requirements of the funding agencies to d
 Involvement with Astropy is justifiable if it helps the project improve schedule or performance or if it improves community usability while not impacting deliverables.
 It is also possible that making it easier for the community to adopt LSST algorithms can improve robustness of the code and find bugs earlier.
 The community will be encouraged to try out the LSST software sooner if it integrates well with Astropy.
-This is likely to significantly enhance utilization of the compute resources provided at LSST data access centers, what LSST calls the Level 3 processing system, during LSST operations resulting in a system that is more scientifically productive.
+This is likely to significantly enhance utilization of the compute resources provided at LSST data access centers, the Level 3 processing system, during LSST operations resulting in a system that is more scientifically productive.
 
 The Astropy and LSST software projects are both attempting to write astronomical software in Python that will benefit the community.
 In this section we look at the areas code can be contributed by LSST to Astropy and where collaboration between LSST and Astropy can enhance both projects.
@@ -167,9 +167,9 @@ Both the Astropy and IVOA communities would benefit if such a standard could be 
 \subsection{Region handling}
 
 The handling of regions such as circles and polygons is not yet supported in Astropy core.
-The Astropy affiliate \texttt{pyregions} package does have code for handling region files from the DS9 application\cite{2005ASPC..347..110J}, with some discussions concerning adopting the IVOA STC standard\cite{2007ivoa.spec.1030R} as a region serialization format.
+The Astropy affiliated \texttt{pyregions} package does have code for handling region files from the DS9 application\cite{2005ASPC..347..110J}, with some discussions concerning adopting the IVOA STC standard\cite{2007ivoa.spec.1030R} as a region serialization format.
 In addition, the \texttt{photutils} affiliated package has some basic support for rasterizing analytic regions in pixel coordinates for photometry.
-A new affiliate package \texttt{astropy.regions}\footnote{\url{https://github.com/astropy/regions}} hopes to unify this functionality and provide a consistent interface for all region operations in Astropy, with the expectation that this functionality will move to Astropy core once the interface stabilizes.
+A new affiliated package \texttt{astropy.regions}\footnote{\url{https://github.com/astropy/regions}} hopes to unify this functionality and provide a consistent interface for all region operations in Astropy, with the expectation that this functionality will move to Astropy core once the interface stabilizes.
 
 LSST's codebase actually includes two distinct geometry libraries:
 \texttt{afw.geom} includes points, boxes, polygons and ellipses for Cartesian coordinate systems, while \texttt{sphgeom} provides similar geometric primitives in spherical polar coordinates.
@@ -201,8 +201,8 @@ A \texttt{Footprint} describes a pixelized region as a sequence of \texttt{Spans
 A \texttt{HeavyFootprint} combines a \texttt{Footprint} with the values of the pixels it covers by simply storing the pixels of each span back-to-back.}
 \end{figure}
 
-Most of the above work focuses on the lower half of Figure~\ref{fig:regions}, but Astropy's unified region plans also include rasterization to images (upper right corner).
-Pixelizing LSST geometries instead typically involves yet another class: \texttt{afw.detection.Footprint} (Figure~\ref{fig:footprint}).
+Most of the above work focuses on the lower half of Fig.~\ref{fig:regions}, but Astropy's unified region plans also include rasterization to images (upper right corner).
+Pixelizing LSST geometries instead typically involves yet another class: \texttt{afw.detection.Footprint} (Fig.~\ref{fig:footprint}).
 \texttt{Footprint} is a compact serialized representation of a mask, listing the pixel indices that contribute to the shape in rasterized order, using a run-length encoding algorithm to conserve space.
 A \texttt{HeavyFootprint} is a \texttt{Footprint} that includes the pixel values themselves.
 \texttt{Footprint} is a critical component of LSST's detection algorithm, as it is used to represent an above-threshold region in an image (similar to SExtractor's ``segmentation map'').
@@ -210,7 +210,7 @@ Similarly, \texttt{HeavyFootprint} plays an important role in deblending and sou
 \texttt{Footprint} and \texttt{HeavyFootprint} represent a convenient intermediate between geometries and images, but their current interfaces reflect a C++-centric design (though they are also available in Python, of course).
 A Python-centric redesign of these interfaces as part of LSST's involvement in Astropy's unified region library could yield valuable dividends, particularly in providing natural and efficient vectorization over irregular regions in images.
 
-LSST does have some C++ code for sky pixelization (upper left of Figure~\ref{fig:regions}), supporting schemes such as HTM\cite{2001misk.conf..631K} and Q3C\cite{2006ASPC..351..735K}.
+LSST does have some C++ code for sky pixelization (upper left of Fig.~\ref{fig:regions}), supporting schemes such as HTM\cite{2001misk.conf..631K} and Q3C\cite{2006ASPC..351..735K}.
 This code is currently unavailable in Python, though this is expected to change in the future.
 There are currently no plans to handle Multi-Order Coverage maps (MOC)\cite{2012ASPC..461..347F,2014ivoa.spec.0602F} or other HEALPix approaches\cite{2015A&A...580A.132R}.
 As the Astropy regions package develops, it may be reasonable for LSST to also donate this code to Astropy.
@@ -220,10 +220,10 @@ As the Astropy regions package develops, it may be reasonable for LSST to also d
 There are a number of high-level algorithms in LSST that could be made available as Astropy affiliated packages\cite{bosch_2016_48435}, including all of the steps necessary to build catalogs from images and combine images to build coadds.
 These provide essentially the same functionality as the popular Astromatic suite\cite{2012ASSP...29...71B}, with an interface that is already more Python-friendly than Astromatic's combination of command-line tools and configuration files.
 The algorithms are also typically more sophisticated than their Astromatic equivalents (and correspondingly are a bit harder to configure).
-Repackaging just the source detection, deblending, and measurement algorithms (roughly equivalent to Astromatic's ubiquitous SExtractor) as Astropy affiliate packages would make a very important (and very useful) subset of LSST's algorithms more readily available to a broader community.
+Repackaging just the source detection, deblending, and measurement algorithms (roughly equivalent to Astromatic's ubiquitous SExtractor) as Astropy affiliated packages would make a very important (and very useful) subset of LSST's algorithms more readily available to a broader community.
 Making them available in this way should aid adoption by the wider community and provide early feedback as to the quality of the algorithms and detect any bugs or anomalous behavior well before commissioning of LSST begins.
 
-Unfortunately, it is difficult to disentangle these algorithms from the lower-level LSST primitive classes they build on, and hence an independent Astropy affiliate package with this functionality will likely depend on not just integrating LSST's region, image, and table classes with Astropy, but spinning these off as Astropy affiliate (or perhaps core) packages as well.
+Unfortunately, it is difficult to disentangle these algorithms from the lower-level LSST primitive classes they build on, and hence an independent Astropy affiliated package with this functionality will likely depend on not just integrating LSST's region, image, and table classes with Astropy, but spinning these off as Astropy affiliated (or perhaps core) packages as well.
 A more feasible approach to making these algorithms available to the Astropy community may be to focus on making all of LSST's packaging more Astropy-friendly (see Section~\ref{sec:packaging}), rather than repackaging algorithms as Astropy affiliates.
 
 Regardless of the packaging, allowing users to seamlessly call these algorithms from code that exists in the Astropy ecosystem is one of the more important goals in Astropy/LSST integration; it would provide the Astropy community with high-quality implementations of important astronomical algorithms that are not currently available in Python, while providing LSST with feedback and testing on some of its most important components.
@@ -276,7 +276,7 @@ This allows developers to use Python for their library code and build system whi
 
 The majority of the Python community have adopted a build system based around the convention of a \texttt{setup.py} file that can be executed to do the build.
 This file uses \texttt{distutils} or \texttt{setuptools} to determine what should be built and can handle most cases where external C/C++ code should be compiled into the Python package.
-There is a strong expectation that any packages made available to the Astropy community should follow the standard Python build convention of supporting \texttt{python setup.py build} and this is a requirement if we wish to make some LSST packages \emph{Astropy affiliated packages}.
+There is a strong expectation that any packages made available to the Astropy community should follow the standard Python build convention of supporting \texttt{python setup.py build} and this is a requirement if we wish to make some LSST packages Astropy affiliated packages.
 This also allows packages to be distributed on the Python Package Index (PyPI\footnote{\url{https://pypi.python.org}}) providing the ability for a general user to use \texttt{pip install lsst\_apps} to install the LSST software.
 
 As a proof of concept we have demonstrated that an LSST package using the standard LSST directory layout can be built using \texttt{setuptools}.
