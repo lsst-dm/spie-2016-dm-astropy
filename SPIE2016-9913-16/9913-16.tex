@@ -122,7 +122,7 @@ The framework includes a Python-based configuration language that has default va
 
 \end{description}
 
-The LSST code base currently contains components that are not of short-term interest for Astropy integration but might become so in the longer run given related work by Astropy contributors in some of these areas\cite{2016-PyAstro-Turner,2016_O12.3_adassxxv}.
+The LSST codebase currently contains components that are not of short-term interest for Astropy integration but might become so in the longer run given related work by Astropy contributors in some of these areas\cite{2016-PyAstro-Turner,2016_O12.3_adassxxv}.
 These include the Data Butler and the Task framework.
 In terms of overlap with Astropy and affiliate packages the \texttt{afw} and \texttt{meas} packages are most relevant for immediate investigation.
 
@@ -169,7 +169,7 @@ Both the Astropy and IVOA communities would benefit if such a standard could be 
 The handling of regions such as circles and polygons is not yet supported in Astropy core.
 The Astropy affiliated \texttt{pyregions} package does have code for handling region files from the DS9 application\cite{2005ASPC..347..110J}, with some discussions concerning adopting the IVOA STC standard\cite{2007ivoa.spec.1030R} as a region serialization format.
 In addition, the \texttt{photutils} affiliated package has some basic support for rasterizing analytic regions in pixel coordinates for photometry.
-A new affiliated package \texttt{astropy.regions}\footnote{\url{https://github.com/astropy/regions}} hopes to unify this functionality and provide a consistent interface for all region operations in Astropy, with the expectation that this functionality will move to Astropy core once the interface stabilizes.
+A new affiliated package, \texttt{astropy.regions},\footnote{\url{https://github.com/astropy/regions}} hopes to unify this functionality and provide a consistent interface for all region operations in Astropy, with the expectation that this functionality will move to Astropy core once the interface stabilizes.
 
 LSST's codebase actually includes two distinct geometry libraries:
 \texttt{afw.geom} includes points, boxes, polygons and ellipses for Cartesian coordinate systems, while \texttt{sphgeom} provides similar geometric primitives in spherical polar coordinates.
@@ -235,11 +235,12 @@ The Astropy \texttt{NDData} class is an implementation of the common astronomy d
 LSST has an \texttt{Exposure} class (one for each underlying data type) represented by a \texttt{MaskedImage} and structured metadata.
 The class layout of an \texttt{Exposure} is shown in Fig.~\ref{fig:exposure}.
 It would be beneficial if an LSST \texttt{Exposure} could implement the \texttt{NDData} interface.
-The mask in an \texttt{Exposure} is a bit mask, allowing each bit to represent a different reason for masking, and not a Boolean mask and the uncertainties are always represented as variances (although covariance has been discussed).
+The mask in an \texttt{Exposure} is a bit mask, allowing each bit to represent a different reason for masking, and not a Boolean mask.
+Uncertainties in an \texttt{Exposure} are always represented as variances (although covariance has been discussed).
 These are supportable as sub-classes and variants of them are already available in the Astropy ecosystem.
 One item that is currently missing from the Astropy arena is the notion of a pixel origin.
 In LSST the pixel origin can be used to specify the coordinates of the data array relative to a parent data array, such as allowing the coordinates of image cutouts to reference where they came from in the parent.
-LSST nomenclature is to use \emph{PARENT} to indicate the abstract pixel coordinate and \emph{LOCAL} to indicate that the coordinates are relative to the 0-based origin of the data array itself\footnote{The Starlink nomenclature\cite{2015A&C....12..146J} is \emph{PIXEL} and \emph{GRID} where \emph{GRID} follows the FITS convention of starting at 1.}.
+LSST nomenclature is to use \emph{PARENT} to indicate the abstract pixel coordinate and \emph{LOCAL} to indicate that the coordinates are relative to the 0-based origin of the data array itself.\footnote{The Starlink nomenclature\cite{2015A&C....12..146J} is \emph{PIXEL} and \emph{GRID} where \emph{GRID} follows the FITS convention of starting at 1.}
 This attachment of a data array to a parent pixel coordinate system is a critical item and we plan to work with Astropy on making this functionality available to \texttt{NDData} users.
 
 \begin{figure} [t]
@@ -288,7 +289,7 @@ The latter would require that EUPS is also available from PyPI (it currently is 
 
 The LSST \texttt{afw.coord} package provides coordinate conversions between ICRS, FK5, Galactic, ecliptic and topocentric coordinate systems.
 It is written in C++ and has no external dependencies on standard coordinate libraries.
-The \texttt{astropy.coordinates} package provides a very usable Python API on top of the standard ERFA astrometry C library\footnote{ERFA is a relicensed version of the standard SOFA library\cite{2011SchpJ...611404H}.}.
+The \texttt{astropy.coordinates} package provides a very usable Python API on top of the standard ERFA astrometry C library.\footnote{ERFA is a relicensed version of the standard SOFA library\cite{2011SchpJ...611404H}.}
 It supports all the coordinate systems provided by the LSST package and many more including FK4.
 
 The LSST C++ code does not use any system other than ICRS; therefore we are proposing to remove this package and replace it with a simple spherical coordinates class.
@@ -308,8 +309,8 @@ The LSST Data Management team adopted SWIG as the standard method for providing 
 Astropy has adopted Cython\cite{2010/content/aip/journal/cise/13/2/10.1109/MCSE.2010.118} when it is required to call C code.
 The Astropy core libraries currently do not call C++, and while Cython support for C++ exists, this support is relatively new and somewhat experimental.
 The Astropy project has no hard rules concerning how C/C++ code should be included in an affiliated package but has a strong preference for Cython.
-LSST is not averse to switching away from SWIG (which results in massive code bloat and extended compile times as currently implemented) and has agreed to investigate Cython\cite{dmtn-013} and pybind11\cite{dmtn-014}\footnote{\url{http://pybind11.readthedocs.org/}}.
-One critical requirement is that any move away from SWIG we must be able to do so in an incremental way and so it must be possible for a C++ object produced from SWIG to be passed into a C++ interface created with the new approach.
+LSST is not averse to switching away from SWIG (which results in massive code bloat and extended compile times as currently implemented) and has agreed to investigate Cython\cite{dmtn-013} and pybind11.\cite{dmtn-014}\footnote{\url{http://pybind11.readthedocs.org/}}
+Any move away from SWIG can only be done incrementally and so it must be possible for a C++ object produced from SWIG to be passed into a C++ interface created with the new approach.
 This has been demonstrated successfully as part of the Cython and pybind11 investigations.
 
 \subsection{Quantities and Units}
@@ -317,7 +318,7 @@ This has been demonstrated successfully as part of the Cython and pybind11 inves
 With the exception of an angle class, LSST does not use any unit conversion machinery.
 Astropy's \texttt{Quantity}, a value with an associated unit, is a very powerful class that can remove an entire category of bugs from scientific software by ensuring that mathematical operations between quantities use compatible units.
 The units package in Astropy has been adapted from the units classes in the \texttt{pynbody} analysis module\cite{pynbody}.
-For heavily used public APIs it would seem to be clear that arguments should be quantities wherever possible.
+For heavily-used public APIs it would seem to be clear that arguments should be quantities wherever possible.
 The question for LSST is how far down in the stack quantities should be used given the performance hit associated with quantities over plain variables.
 Additionally, how much more complicated does the C++/python interface become if SWIG has to be taught how to convert quantities to the correct form before passing the value to the C++.
 This is especially critical for large arrays, supplied externally, being passed through where we do not want to do a copy operation before entering C++ and also do not want to normalize units for millions of data points at that time.
@@ -355,14 +356,14 @@ The concrete proposals from this investigation are therefore:
 
 \end{itemize}
 
-With these changes implemented LSST will have a solid base from which to assess whether it is feasible to migrate more LSST code to the community as affiliated packages.
+With these changes implemented, LSST will have a solid base from which to assess whether it is feasible to migrate more LSST code to the Astropy community as affiliated packages.
 It is probable that LSST will start to migrate the existing codebase entirely to Astropy classes where appropriate classes exist.
 In particular \texttt{astropy.coordinates} could be adopted fairly rapidly.
 Switching time libraries may require significantly more thought.
 
 \section{Conclusion}
 
-The LSST project has a code base that has developed over a number of years and has been developed independently of the wider Python astronomy software community.
+The LSST project has a codebase that has developed over a number of years and has been developed independently of the wider Python astronomy software community.
 We have looked at the Astropy package and worked with the Astropy team to understand areas where synergies exist and where LSST can contribute more fully to the community without delaying our primary deliverables.
 The proposals outlined in this document go a long way towards integrating LSST into the wider software community and should bring key benefits to LSST and research astronomers.
 Work on these changes has already begun and the intent is to allocate significant effort to this migration in the second half of 2016.
