@@ -177,14 +177,14 @@ Both the Astropy and IVOA communities would benefit if such a standard could be 
 The handling of regions such as circles and polygons is not yet supported in Astropy core.
 The Astropy affiliated \texttt{pyregions} package does have code for handling region files from the DS9 application\cite{2005ASPC..347..110J}, with some discussions concerning adopting the IVOA STC standard\cite{2007ivoa.spec.1030R} as a region serialization format.
 In addition, the \texttt{photutils} affiliated package has some basic support for rasterizing analytic regions in pixel coordinates for photometry.
-A new affiliated package, \texttt{astropy.regions},\footnote{\url{https://github.com/astropy/regions}} hopes to unify this functionality and provide a consistent interface for all region operations in Astropy, with the expectation that this functionality will move to Astropy core once the interface stabilizes.
+A new affiliated package\footnote{\url{https://github.com/astropy/regions}}, hopes to unify this functionality and provide a consistent interface for all region operations in Astropy, with the expectation that this functionality will move to Astropy core once the interface stabilizes.
 
 LSST's codebase actually includes two distinct geometry libraries:
 \texttt{afw.geom} includes points, boxes, polygons and ellipses for Cartesian coordinate systems, while \texttt{sphgeom} provides similar geometric primitives in spherical polar coordinates.
 These do not currently interoperate smoothly, reflecting the fact that they have thus far been used in completely different components of the codebase.
 Integrating these libraries will clearly be important for LSST in the future, suggesting that now is a perfect time for LSST and Astropy to collaborate on a new unified regions library.
 LSST could provide mature implementations of individual geometry classes to such a collaboration, while Astropy brings serialization and visualization code as well as a broader sense of the requirements for a unified library.
-A major challenge for a jointly-developed library is reconciling LSST's need for \CPP\ geometry classes (with Python bindings) with Astropy's preference for pure Python for easier installation and maintenance.
+A major challenge for a jointly-developed library is reconciling LSST's need for \CPP\ geometry classes (with Python bindings) with Astropy's preference for pure Python, and when necessary Cython (see Sec.~\ref{sec:bindings}), for easier installation and maintenance.
 
 \begin{figure}[t]
 \begin{center}
@@ -312,6 +312,7 @@ However, the LSST and Astropy table data models are similar enough to allow read
 As this view interface improves, consumers of table-based LSST data products will be able to simply use Astropy tools for analysis, removing much of the need for LSST to develop its own support for many table operations.
 
 \subsection{\CPP\ Bindings}
+\label{sec:bindings}
 
 The LSST Data Management team adopted SWIG as the standard method for providing a Python interface to the \CPP\ code.
 Astropy has adopted Cython\cite{2010/content/aip/journal/cise/13/2/10.1109/MCSE.2010.118} when it is required to call C code.
@@ -379,7 +380,7 @@ Work on these changes has already begun and the intent is to allocate significan
 \acknowledgments\
 
 We thank those who attended the LSST/Astropy Summit at the University of Washington in March 2016 that forms the basis for the approaches outlined in this paper.
-We thank Adam Ginsburg for comments on the draft manuscript.
+We thank Adam Ginsburg and Brigitta Sipocz for comments on the draft manuscript.
 This material is based upon work supported in part by the National Science Foundation through Cooperative Support Agreement (CSA) Award No.\ AST--1227061 under Governing Cooperative Agreement 1258333 managed by the Association of Universities for Research in Astronomy (AURA), and the Department of Energy under Contract No.\ DE--AC02--76SF00515 with the SLAC National Accelerator Laboratory.
 Additional LSST funding comes from private donations, grants to universities, and in-kind support from LSSTC Institutional Members.
 
