@@ -87,14 +87,14 @@ While algorithmically advanced pipelines and public catalog releases have become
 The difficulty of sharing code between telescopes has long been a topic of discussion in the astronomy software community\cite{1998ASPC..145..142M,1999ASPC..172...11E,2001ASSL..266..163S,2002SPIE.4844..321E}.
 Historically there have been some successes in fundamental libraries, such as SOFA\cite{2011SchpJ...611404H}, CFITSIO\cite{1999ASPC..172..487P} and wcslib\cite{2011ascl.soft08003C}, and in environments, such as IRAF\cite{1986SPIE..627..733T}, AIPS\cite{1996ASPC..101...37V} and Starlink\cite{1982QJRAS..23..485D}.
 Despite these, there is still a tendency for a new project to embark on the creation of a new environment or software infrastructure if there are slight requirements mismatches and no external political will to adopt a specific software suite.
-The growth in the Open Source software movement\cite{2006OpenSources} and recent explosion in support tools such as git and GitHub for code sharing\cite{2014IACWSLima}, makes the process of software reuse far easier than it has been in the past.
+The growth in the Open Source software movement\cite{2006OpenSources} and recent explosion in support tools, such as git and GitHub for code sharing\cite{2014IACWSLima}, makes the process of software reuse far easier than it has been in the past.
 
 The LSST data processing pipeline software has been in development as an open source project since 2004\cite{2004AAS...20510811A,2010SPIE.7740E..15A,2016_adassxxv_P056} and during these 12 years of development much has changed in the Python, \CPP\ and astronomy software world.
 
 
 \section{The LSST Science Pipeline Software}
 
-As with other software developed in the early 2000s, such as CASA\cite{2012ASPC..461..849P}, the LSST science pipeline software is based on a \CPP\ core with a Python control layer, where the Python/\CPP\ interface layer is handled via SWIG\cite{beazley2003automated} bindings.
+As with other software developed in the early 2000s, such as CASA\cite{2012ASPC..461..849P}, the LSST science pipeline software is based on a \CPP\ core with a Python control layer, where for LSST the Python/\CPP\ interface layer is handled via SWIG\cite{beazley2003automated} bindings.
 The general layout of the code is shown in Fig.~\ref{fig:layers}.
 At the time of writing the LSST science pipelines codebase is split between \CPP\ and Python with of order 105,000 lines of Python and 125,000 lines of \CPP\footnote{This total does not include comment or blank lines, nor does it include the 80,000 lines of Python and 1.6\,million lines of \CPP\ generated for the SWIG wrappers.}.
 
@@ -133,9 +133,9 @@ The framework includes a Python-based configuration language that has default va
 
 The LSST codebase currently contains components that are not of short-term interest for Astropy integration but might become so in the longer run given related work by Astropy contributors in some of these areas\cite{2016-PyAstro-Turner,2016_O12.3_adassxxv,2015_scipy_bushouse}.
 These include the Data Butler and the Task framework.
-In terms of overlap with Astropy and affiliate packages the \texttt{afw} and \texttt{meas} packages are most relevant for immediate investigation.
+In terms of overlap with Astropy and affiliated packages the \texttt{afw} and \texttt{meas} packages are most relevant for immediate investigation as they provide some functionality that is of broader interest to the Astropy community but also have functionality that is also present within Astropy.
 
-The algorithms in the LSST codebase are not yet at the level of scientific quality ultimately needed for LSST, but they are already being used to process data from the Hyper Suprime-Cam Survey on the Subaru telescope\cite{2012SPIE.8446E..0ZM}, one of the major precursors surveys for LSST, and generally represent the current state-of-the-art.
+The algorithms in the LSST codebase are not yet at the level of scientific quality ultimately needed for LSST, but they are already being used to process data from the Hyper Suprime-Cam Survey on the Subaru telescope\cite{2012SPIE.8446E..0ZM,2016arXiv160302281M}, one of the major precursors surveys for LSST, and generally represent the current state-of-the-art.
 
 
 \section{Astropy}
@@ -230,7 +230,6 @@ There are a number of high-level algorithms in LSST that could be made available
 These provide essentially the same functionality as the popular Astromatic suite\cite{2012ASSP...29...71B}, with an interface that is already more Python-friendly than Astromatic's combination of command-line tools and configuration files.
 The algorithms are also typically more sophisticated than their Astromatic equivalents (and correspondingly are a bit harder to configure).
 Repackaging just the source detection, deblending, and measurement algorithms (roughly equivalent to Astromatic's ubiquitous SExtractor) as Astropy affiliated packages would make a very important (and very useful) subset of LSST's algorithms more readily available to a broader community.
-Making them available in this way should aid adoption by the wider community and provide early feedback as to the quality of the algorithms and detect any bugs or anomalous behavior well before commissioning of LSST begins.
 
 Unfortunately, it is difficult to disentangle these algorithms from the lower-level LSST primitive classes they build on, and hence an independent Astropy affiliated package with this functionality will likely depend on not just integrating LSST's region, image, and table classes with Astropy, but spinning these off as Astropy affiliated (or perhaps core) packages as well.
 A more feasible approach to making these algorithms available to the Astropy community may be to focus on making all of LSST's packaging more Astropy-friendly (see Section~\ref{sec:packaging}), rather than repackaging algorithms as Astropy affiliates.
@@ -241,7 +240,7 @@ Unfortunately, due to its dependency on virtually every other integration effort
 \subsection{NDData}
 
 The Astropy \texttt{NDData} class is an implementation of the common astronomy data structure\cite{2015A&C....12..146J} of a data array, mask and uncertainty with attached metadata.
-LSST has an \texttt{Exposure} class (in \CPP\ it is templated on the data type of the image)) represented by a \texttt{MaskedImage} and structured metadata.
+LSST has an \texttt{Exposure} class (in \CPP\ it is templated on the data type of the image) represented by a \texttt{MaskedImage} and structured metadata.
 The class layout of an \texttt{Exposure} is shown in Fig.~\ref{fig:exposure}.
 It would be beneficial if an LSST \texttt{Exposure} could implement the \texttt{NDData} interface.
 The mask in an \texttt{Exposure} is a bit mask, allowing each bit to represent a different reason for masking, and not a Boolean mask.
@@ -295,6 +294,7 @@ To get this working on PyPI it is necessary either to generate the \texttt{setup
 The latter would require that EUPS is also available from PyPI (it currently is not) but might be less prone to errors.
 
 \subsection{Astronomical Coordinates}
+\label{sec:coords}
 
 The LSST \texttt{afw.coord} package provides coordinate conversions between ICRS, FK5, Galactic, ecliptic and topocentric coordinate systems.
 It is written in \CPP\ and has no external dependencies on standard coordinate libraries.
@@ -341,9 +341,8 @@ LSST uses a \CPP\ time class, \texttt{lsst::daf::base::DateTime} to provide basi
 The Astropy \texttt{astropy.time} package has far more functionality and adopting it in Python LSST code is quite attractive.
 The complication is in how to make a Python view of a \texttt{daf\_base} time object look like an \texttt{astropy.time} and vice versa when crossing the Python/\CPP\ boundary.
 One way forward may be to implement the \CPP\ class using \texttt{astropy.time} objects.
-An experimental implementation does exist demonstrating that this can be made to work, although more experimentation is required.
-In particular, Python calling \CPP\ that calls Python can be relatively brittle and can break if there is a Python shared library mismatch.
-Also, \CPP\ calling Python in a loop will be much slower than calling \CPP\ and the \CPP\ caller could be surprised by a big performance change if the implementation of the \CPP\ library is changed to use Python.
+An experimental implementation does exist demonstrating that this can be made to work, Python calling \CPP\ that calls Python can be relatively brittle and can break if there is a Python shared library mismatch.
+Rather than adding this complexity to the \CPP\ codebase it is likely we will adopt a solution similar to that described in \S~\ref{sec:coords} whereby we simplify the \CPP\ class so it is tracking nanoseconds in epoch and then convert it to \texttt{astropy.time} in the Python layer.
 
 \section{Proposal}
 
@@ -355,7 +354,7 @@ The concrete proposals from this investigation are therefore:
 \item Support views of LSST tables as Astropy tables.
 \item Determine whether STC-2, in YAML form, is a suitable basis for WCS interoperability.
 \item Remove LSST astronomical coordinate classes and replace with Astropy coordinates in Python and a generic spherical coordinates class in \CPP.
-\item Consider using \texttt{astropy.time}, even in \CPP.
+\item Simplify the LSST \CPP\ date time classes and use switch to using \texttt{astropy.time} in Python code.
 \item Investigate migration away from SWIG for \CPP\ bindings.
 \item Contribute the LSST \texttt{Footprint} code to Astropy.
 \item Create an Astropy affiliated package from the \texttt{afw.detection} package.
@@ -376,7 +375,7 @@ Switching time libraries may require significantly more thought.
 The LSST project has a codebase that has developed over a number of years and has been developed independently of the wider Python astronomy software community.
 We have looked at the Astropy package and worked with the Astropy team to understand areas where synergies exist and where LSST can contribute more fully to the community without delaying our primary deliverables.
 The proposals outlined in this document go a long way towards integrating LSST into the wider software community and should bring key benefits to LSST and research astronomers.
-Work on these changes has already begun and the intent is to allocate significant effort to this migration in the second half of 2016.
+Work on these changes has already begun and the intent is to allocate effort to this migration in the second half of 2016 and prioritize the integration of \texttt{astropy} into the LSST codebase.
 
 \acknowledgments\
 
