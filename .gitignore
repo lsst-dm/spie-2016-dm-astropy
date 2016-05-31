@@ -1,3 +1,9 @@
+*.aux
+*.bbl
+*.blg
+*.out
+9913-16.pdf
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
